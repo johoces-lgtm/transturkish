@@ -1,4 +1,4 @@
-package com.example.guia9.ui.screens
+package com.example.transturkish.ui.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.guia9.R
+import com.example.transturkish.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

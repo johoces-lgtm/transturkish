@@ -1,4 +1,4 @@
-package com.example.guia9.ui.utils
+package com.example.transturkish.ui.utils
 
 import androidx.activity.compose.LocalActivity
 import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi

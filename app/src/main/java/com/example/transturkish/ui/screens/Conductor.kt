@@ -1,8 +1,8 @@
-package com.example.guia9.ui.screens
+package com.example.transturkish.ui.screens
 
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
-import com.example.guia9.ui.utils.obtemerWindowSizeClass
+import com.example.transturkish.ui.utils.obtemerWindowSizeClass
 
 @Composable
 fun Conductor(){

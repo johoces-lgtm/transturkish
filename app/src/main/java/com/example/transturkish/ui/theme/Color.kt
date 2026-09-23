@@ -1,4 +1,4 @@
-package com.example.guia9.ui.theme
+package com.example.transturkish.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
