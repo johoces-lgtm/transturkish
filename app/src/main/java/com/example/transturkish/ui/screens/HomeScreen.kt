@@ -42,7 +42,7 @@ fun HomeScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = "Pantalla Home") },
+                    title = { Text(text = "Transturkish") },
                     navigationIcon = {
                         IconButton(onClick = { scope.launch { drawerState.open() } }) {
                             Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
@@ -58,7 +58,19 @@ fun HomeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
-                Text(text = "Bienvenido a la Página de Inicio (MVVM)")
+
+                Text(
+                    text = "¡Bienvenido a Transturkish!",
+                    style = MaterialTheme.typography.headlineSmall
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Aprende palabras en turco y español",
+                    style = MaterialTheme.typography.bodyLarge
+                )
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -73,8 +85,20 @@ fun HomeScreen(
                         navController.navigate("registro")
                     }
                 ) {
-                    Text(text = "Registrarse")
+                    Text(text = "Crear mi cuenta")
+
                 }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Button(
+                    onClick = {
+                        viewModel.navigateTo(Screen.Profile)
+                    }
+                ) {
+                    Text(text = "Mi perfil")
+                }
+
 
 
                 Spacer(modifier = Modifier.height(16.dp))
