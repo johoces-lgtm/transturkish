@@ -71,6 +71,21 @@ fun HomeScreen(
                     style = MaterialTheme.typography.bodyLarge
                 )
 
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = "Practica tu vocabulario",
+                    style = MaterialTheme.typography.titleMedium
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Próximamente: minijuego de palabras turcas",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 
