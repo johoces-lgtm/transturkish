@@ -11,6 +11,13 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.transturkish.viewmodel.UsuarioViewModel
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Icon
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Home
+
 
 @Composable
 fun RegistroScreen(navController: NavController, viewModel: UsuarioViewModel) {
@@ -21,22 +28,47 @@ fun RegistroScreen(navController: NavController, viewModel: UsuarioViewModel) {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         // Campo nombre
+
         OutlinedTextField(
             value = estado.nombre,
             onValueChange = viewModel::onNombreChange,
             label = { Text("Nombre") },
-            isError = estado.errores.nombre != null,
-            supportingText = {
-                estado.errores.nombre?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
+
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Person,
+                    contentDescription = null
+                )
             },
+
+            isError = estado.errores.nombre != null,
+
+            supportingText = {
+                estado.errores.nombre?.let {
+                    Text(
+                        text = it,
+                        color = MaterialTheme.colorScheme.error
+                    )
+                }
+            },
+
             modifier = Modifier.fillMaxWidth()
         )
+
 
         // Campo correo
         OutlinedTextField(
             value = estado.correo,
             onValueChange = viewModel::onCorreoChange,
             label = { Text("Correo electrónico") },
+
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Email,
+                    contentDescription = null
+                )
+            },
+
             isError = estado.errores.correo != null,
             supportingText = {
                 estado.errores.correo?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }
@@ -49,6 +81,14 @@ fun RegistroScreen(navController: NavController, viewModel: UsuarioViewModel) {
             value = estado.clave,
             onValueChange = viewModel::onClaveChange,
             label = { Text("Contraseña") },
+
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Lock,
+                    contentDescription = null
+                )
+            },
+
             visualTransformation = PasswordVisualTransformation(),
             isError = estado.errores.clave != null,
             supportingText = {
@@ -62,6 +102,14 @@ fun RegistroScreen(navController: NavController, viewModel: UsuarioViewModel) {
             value = estado.direccion,
             onValueChange = viewModel::onDireccionChange,
             label = { Text("Dirección") },
+
+            leadingIcon = {
+                Icon(
+                    imageVector = Icons.Default.Home,
+                    contentDescription = null
+                )
+            },
+
             isError = estado.errores.direccion != null,
             supportingText = {
                 estado.errores.direccion?.let { Text(text = it, color = MaterialTheme.colorScheme.error) }

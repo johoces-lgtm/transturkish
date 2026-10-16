@@ -68,6 +68,17 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(16.dp))
 
+                Button(
+                    onClick = {
+                        navController.navigate("registro")
+                    }
+                ) {
+                    Text(text = "Registrarse")
+                }
+
+
+                Spacer(modifier = Modifier.height(16.dp))
+
 
                 Button(onClick = { viewModel.navigateTo(Screen.Animaciones) }) {
                     Text(text = "Guía 12 - Animaciones y Estado")
