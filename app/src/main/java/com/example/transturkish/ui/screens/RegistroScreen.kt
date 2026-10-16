@@ -17,11 +17,19 @@ import androidx.compose.material3.Icon
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 
 @Composable
 fun RegistroScreen(navController: NavController, viewModel: UsuarioViewModel) {
     val estado by viewModel.estado.collectAsState()
+
+    var intentoRegistrar by remember {
+        mutableStateOf(false)
+    }
+
 
     Column(
         modifier = Modifier.fillMaxSize().padding(16.dp),
@@ -127,13 +135,24 @@ fun RegistroScreen(navController: NavController, viewModel: UsuarioViewModel) {
             Text("Acepto los términos y condiciones")
         }
 
+        if (intentoRegistrar && !estado.aceptaTerminos) {
+            Text(
+                text = "Debes aceptar los términos y condiciones",
+                color = MaterialTheme.colorScheme.error
+            )
+        }
+
+
         // Botón Enviar
         Button(
             onClick = {
+                intentoRegistrar = true
+
                 if (viewModel.validarFormulario()) {
                     navController.navigate("resumen")
                 }
-            },
+            }
+            ,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Registrar")
