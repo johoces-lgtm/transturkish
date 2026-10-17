@@ -1,3 +1,4 @@
+
 package com.example.transturkish.ui.screens
 
 import androidx.compose.foundation.layout.*
@@ -20,16 +21,23 @@ fun HomeScreen(
     navController: NavController,
     viewModel: MainViewModel = viewModel()
 ) {
-    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val drawerState = rememberDrawerState(
+        initialValue = DrawerValue.Closed
+    )
+
     val scope = rememberCoroutineScope()
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Text(text = "Menu", modifier = Modifier.padding(16.dp))
+                Text(
+                    text = "Menú",
+                    modifier = Modifier.padding(16.dp)
+                )
+
                 NavigationDrawerItem(
-                    label = { Text(text = "Ir a Perfil") },
+                    label = { Text("Mi perfil") },
                     selected = false,
                     onClick = {
                         scope.launch { drawerState.close() }
@@ -42,19 +50,28 @@ fun HomeScreen(
         Scaffold(
             topBar = {
                 TopAppBar(
-                    title = { Text(text = "Transturkish") },
+                    title = { Text("Transturkish") },
                     navigationIcon = {
-                        IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                            Icon(imageVector = Icons.Default.Menu, contentDescription = "Menu")
+                        IconButton(
+                            onClick = {
+                                scope.launch { drawerState.open() }
+                            }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Menu,
+                                contentDescription = "Abrir menú"
+                            )
                         }
                     }
                 )
             }
         ) { innerPadding ->
+
             Column(
                 modifier = Modifier
                     .padding(innerPadding)
-                    .fillMaxSize(),
+                    .fillMaxSize()
+                    .padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -64,66 +81,48 @@ fun HomeScreen(
                     style = MaterialTheme.typography.headlineSmall
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
                     text = "Aprende palabras en turco y español",
                     style = MaterialTheme.typography.bodyLarge
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(32.dp))
 
                 Text(
-                    text = "Practica tu vocabulario",
+                    text = "Pon a prueba tu vocabulario",
                     style = MaterialTheme.typography.titleMedium
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                Text(
-                    text = "Próximamente: minijuego de palabras turcas",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-
-
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(onClick = { viewModel.navigateTo(Screen.Settings) }) {
-                    Text(text = "Ir a Configuracion")
+                Button(
+                    onClick = {
+                        navController.navigate("minijuego")
+                    }
+                ) {
+                    Text("Jugar")
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
                     onClick = {
                         navController.navigate("registro")
                     }
                 ) {
-                    Text(text = "Crear mi cuenta")
-
+                    Text("Crear mi cuenta")
                 }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
                 Button(
                     onClick = {
                         viewModel.navigateTo(Screen.Profile)
                     }
                 ) {
-                    Text(text = "Mi perfil")
-                }
-
-
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-
-                Button(onClick = { viewModel.navigateTo(Screen.Animaciones) }) {
-                    Text(text = "Guía 12 - Animaciones y Estado")
-                }
-                Button(onClick = { viewModel.navigateTo(Screen.Camara) }) {
-                    Text(text = "Guía 13 - Cámara (Intent)")
+                    Text("Mi perfil")
                 }
             }
         }

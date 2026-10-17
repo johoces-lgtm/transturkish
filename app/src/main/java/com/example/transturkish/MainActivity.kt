@@ -15,10 +15,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-
 import com.example.transturkish.ui.navigation.NavigationEvent
 import com.example.transturkish.ui.navigation.Screen
-
 import com.example.transturkish.ui.screens.HomeScreen
 import com.example.transturkish.ui.screens.ProfileScreen
 import com.example.transturkish.ui.screens.SettingsScreen
@@ -26,12 +24,11 @@ import com.example.transturkish.ui.screens.RegistroScreen
 import com.example.transturkish.ui.screens.ResumenScreen
 import com.example.transturkish.ui.screens.PantallaPrincipal
 import com.example.transturkish.ui.screens.CamaraScreen
-
 import com.example.transturkish.ui.theme.Guia9Theme
 import com.example.transturkish.viewmodel.MainViewModel
 import com.example.transturkish.viewmodel.UsuarioViewModel
-
 import kotlinx.coroutines.flow.collectLatest
+import com.example.transturkish.ui.components.MiniJuegoTraduccion
 
 class MainActivity : ComponentActivity() {
 
@@ -108,6 +105,12 @@ class MainActivity : ComponentActivity() {
                                     viewModel = viewModel
                                 )
                             }
+
+                            // Pantalla de minijuego
+                            composable("minijuego") {
+                                MiniJuegoTraduccion(navController = navController)
+                            }
+
 
                             // Pantalla de perfil
                             composable(Screen.Profile.route) {
