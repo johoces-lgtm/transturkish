@@ -1,7 +1,7 @@
 
 package com.example.transturkish.ui.screens
 
-import android.graphics.Bitmap
+import android.content.Context
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -21,10 +21,12 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.core.content.FileProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.transturkish.ui.navigation.Screen
 import com.example.transturkish.viewmodel.MainViewModel
+import java.io.File
 
 @Composable
 fun ProfileScreen(
@@ -43,30 +45,35 @@ fun ProfileScreen(
         mutableStateOf<Uri?>(null)
     }
 
-    // Guarda la fotografía tomada con la cámara
-    var fotoCamara by remember {
-        mutableStateOf<Bitmap?>(null)
+    // Guarda la dirección de la fotografía tomada
+    var fotoCamaraUri by remember {
+        mutableStateOf<Uri?>(null)
     }
 
-    // Permite acceder a los recursos del celular
+    // Guarda la dirección preparada antes de abrir la cámara
+    var uriTemporal by remember {
+        mutableStateOf<Uri?>(null)
+    }
+
     val context = LocalContext.current
 
-    // Guía 13: Seleccionar una imagen de la galería
+    // Seleccionar una imagen desde la galería
     val seleccionarImagen = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         if (uri != null) {
             imagenUri = uri
-            fotoCamara = null
+            fotoCamaraUri = null
         }
     }
 
-    // Guía 13: Tomar una fotografía con la cámara
+    // Tomar una fotografía y guardarla en un archivo temporal
     val lanzarCamara = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.TakePicturePreview()
-    ) { imagen ->
-        if (imagen != null) {
-            fotoCamara = imagen
+        contract = ActivityResultContracts.TakePicture()
+    ) { fotografiaGuardada ->
+
+        if (fotografiaGuardada) {
+            fotoCamaraUri = uriTemporal
             imagenUri = null
         }
     }
@@ -112,7 +119,7 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para abrir la galería
+            // Botón para seleccionar imagen de galería
             Button(
                 onClick = {
                     seleccionarImagen.launch("image/*")
@@ -123,10 +130,16 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para abrir la cámara
+            // Botón para tomar fotografía
             Button(
                 onClick = {
-                    lanzarCamara.launch(null)
+                    try {
+                        val nuevaUri = crearUriFoto(context)
+                        uriTemporal = nuevaUri
+                        lanzarCamara.launch(nuevaUri)
+                    } catch (e: Exception) {
+                        fotoCamaraUri = null
+                    }
                 }
             ) {
                 Text("Tomar fotografía")
@@ -134,28 +147,16 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Mostrar fotografía tomada con la cámara
-            if (fotoCamara != null) {
+            // Elegir la imagen que se mostrará
+            val uriMostrar = fotoCamaraUri ?: imagenUri
 
-                Text("Fotografía tomada correctamente")
+            if (uriMostrar != null) {
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Image(
-                    bitmap = fotoCamara!!.asImageBitmap(),
-                    contentDescription = "Fotografía tomada con la cámara",
-                    modifier = Modifier.size(200.dp),
-                    contentScale = ContentScale.Crop
-                )
-            }
-
-            // Mostrar imagen seleccionada de la galería
-            if (imagenUri != null) {
-
-                val bitmap = remember(imagenUri) {
+                // Leer la fotografía desde su Uri
+                val bitmap = remember(uriMostrar) {
                     try {
                         context.contentResolver
-                            .openInputStream(imagenUri!!)
+                            .openInputStream(uriMostrar)
                             ?.use { BitmapFactory.decodeStream(it) }
                     } catch (e: Exception) {
                         null
@@ -163,20 +164,49 @@ fun ProfileScreen(
                 }
 
                 if (bitmap != null) {
-                    Text("Imagen seleccionada correctamente")
+
+                    Text(
+                        if (fotoCamaraUri != null)
+                            "Fotografía tomada correctamente"
+                        else
+                            "Imagen seleccionada correctamente"
+                    )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Image(
                         bitmap = bitmap.asImageBitmap(),
-                        contentDescription = "Imagen seleccionada de la galería",
+                        contentDescription = "Imagen del perfil",
                         modifier = Modifier.size(200.dp),
                         contentScale = ContentScale.Crop
                     )
+
                 } else {
                     Text("No se pudo cargar la imagen")
                 }
             }
         }
     }
+}
+
+// Crear un archivo temporal y obtener su Uri
+fun crearUriFoto(context: Context): Uri {
+
+    // Carpeta temporal de fotografías
+    val carpeta = File(context.cacheDir, "imagenes")
+    carpeta.mkdirs()
+
+    // Archivo JPG con nombre único
+    val archivo = File.createTempFile(
+        "foto_",
+        ".jpg",
+        carpeta
+    )
+
+    // Uri segura para compartir con la cámara
+    return FileProvider.getUriForFile(
+        context,
+        "${context.packageName}.fileprovider",
+        archivo
+    )
 }
