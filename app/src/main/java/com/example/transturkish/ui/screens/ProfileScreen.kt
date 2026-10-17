@@ -1,12 +1,15 @@
 
 package com.example.transturkish.ui.screens
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -35,20 +38,36 @@ fun ProfileScreen(
         mutableIntStateOf(1)
     }
 
-    // Guía 13: Estado de la imagen seleccionada
+    // Guarda la imagen seleccionada desde la galería
     var imagenUri by remember {
         mutableStateOf<Uri?>(null)
+    }
+
+    // Guarda la fotografía tomada con la cámara
+    var fotoCamara by remember {
+        mutableStateOf<Bitmap?>(null)
     }
 
     // Permite acceder a los recursos del celular
     val context = LocalContext.current
 
-    // Guía 13: Selector de imágenes de la galería
+    // Guía 13: Seleccionar una imagen de la galería
     val seleccionarImagen = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
         if (uri != null) {
             imagenUri = uri
+            fotoCamara = null
+        }
+    }
+
+    // Guía 13: Tomar una fotografía con la cámara
+    val lanzarCamara = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.TakePicturePreview()
+    ) { imagen ->
+        if (imagen != null) {
+            fotoCamara = imagen
+            imagenUri = null
         }
     }
 
@@ -83,7 +102,9 @@ fun ProfileScreen(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .fillMaxSize(),
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
@@ -102,7 +123,33 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Mostrar la fotografía seleccionada
+            // Botón para abrir la cámara
+            Button(
+                onClick = {
+                    lanzarCamara.launch(null)
+                }
+            ) {
+                Text("Tomar fotografía")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Mostrar fotografía tomada con la cámara
+            if (fotoCamara != null) {
+
+                Text("Fotografía tomada correctamente")
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Image(
+                    bitmap = fotoCamara!!.asImageBitmap(),
+                    contentDescription = "Fotografía tomada con la cámara",
+                    modifier = Modifier.size(200.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
+
+            // Mostrar imagen seleccionada de la galería
             if (imagenUri != null) {
 
                 val bitmap = remember(imagenUri) {
@@ -123,8 +170,7 @@ fun ProfileScreen(
                     Image(
                         bitmap = bitmap.asImageBitmap(),
                         contentDescription = "Imagen seleccionada de la galería",
-                        modifier = Modifier
-                            .size(200.dp),
+                        modifier = Modifier.size(200.dp),
                         contentScale = ContentScale.Crop
                     )
                 } else {
