@@ -25,6 +25,7 @@ import com.example.transturkish.ui.theme.Guia9Theme
 import com.example.transturkish.viewmodel.MainViewModel
 import com.example.transturkish.viewmodel.UsuarioViewModel
 import com.example.transturkish.ui.screens.PantallaPrincipal
+import com.example.transturkish.ui.screens.CamaraScreen
 import kotlinx.coroutines.flow.collectLatest
 
 // Asegúrate de importar tus nuevas pantallas y ViewModel
@@ -94,6 +95,9 @@ class MainActivity : ComponentActivity() {
                             }
                             composable(route = Screen.Animaciones.route) {
                                 PantallaPrincipal()
+                            }
+                            composable(route = Screen.Camara.route) {
+                                CamaraScreen()
                             }
                         }
                     }
