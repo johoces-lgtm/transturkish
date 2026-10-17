@@ -1,8 +1,11 @@
+
 package com.example.transturkish.ui.screens
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -11,6 +14,9 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -33,6 +39,9 @@ fun ProfileScreen(
     var imagenUri by remember {
         mutableStateOf<Uri?>(null)
     }
+
+    // Permite acceder a los recursos del celular
+    val context = LocalContext.current
 
     // Guía 13: Selector de imágenes de la galería
     val seleccionarImagen = rememberLauncherForActivityResult(
@@ -70,6 +79,7 @@ fun ProfileScreen(
             }
         }
     ) { innerPadding ->
+
         Column(
             modifier = Modifier
                 .padding(innerPadding)
@@ -81,7 +91,7 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Abre la galería del dispositivo
+            // Botón para abrir la galería
             Button(
                 onClick = {
                     seleccionarImagen.launch("image/*")
@@ -92,9 +102,34 @@ fun ProfileScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Confirma que se seleccionó una imagen
+            // Mostrar la fotografía seleccionada
             if (imagenUri != null) {
-                Text("Imagen seleccionada correctamente")
+
+                val bitmap = remember(imagenUri) {
+                    try {
+                        context.contentResolver
+                            .openInputStream(imagenUri!!)
+                            ?.use { BitmapFactory.decodeStream(it) }
+                    } catch (e: Exception) {
+                        null
+                    }
+                }
+
+                if (bitmap != null) {
+                    Text("Imagen seleccionada correctamente")
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Image(
+                        bitmap = bitmap.asImageBitmap(),
+                        contentDescription = "Imagen seleccionada de la galería",
+                        modifier = Modifier
+                            .size(200.dp),
+                        contentScale = ContentScale.Crop
+                    )
+                } else {
+                    Text("No se pudo cargar la imagen")
+                }
             }
         }
     }
