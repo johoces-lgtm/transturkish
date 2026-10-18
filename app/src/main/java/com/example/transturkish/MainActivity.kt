@@ -21,81 +21,125 @@ import com.example.transturkish.ui.screens.ProfileScreen
 import com.example.transturkish.ui.screens.RegistroScreen
 import com.example.transturkish.ui.screens.ResumenScreen
 import com.example.transturkish.ui.screens.SettingsScreen
+import com.example.transturkish.ui.screens.PantallaPrincipal
+import com.example.transturkish.ui.screens.CamaraScreen
 import com.example.transturkish.ui.theme.Guia9Theme
 import com.example.transturkish.viewmodel.MainViewModel
 import com.example.transturkish.viewmodel.UsuarioViewModel
-import com.example.transturkish.ui.screens.PantallaPrincipal
-import com.example.transturkish.ui.screens.CamaraScreen
+import com.example.transturkish.viewmodel.ImagenViewModel
 import kotlinx.coroutines.flow.collectLatest
 
-// Asegúrate de importar tus nuevas pantallas y ViewModel
-// import com.tu_paquete.transturkish.ui.screen.RegistroScreen
-// import com.tu_paquete.transturkish.ui.screen.ResumenScreen
-// import com.tu_paquete.transturkish.viewmodel.UsuarioViewModel
-
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         enableEdgeToEdge()
+
         setContent {
             Guia9Theme {
-                // Tu ViewModel actual para la navegación
+
+                // ViewModel para la navegación
                 val viewModel: MainViewModel = viewModel()
 
-                // Se Instancia el ViewModel de la guía una sola vez para ser compartido
+                // ViewModel compartido entre Registro y Resumen
                 val usuarioViewModel: UsuarioViewModel = viewModel()
+
+                // ViewModel para conservar la imagen al navegar
+                val imagenViewModel: ImagenViewModel = viewModel()
 
                 val navController = rememberNavController()
 
-                // Escucha eventos de navegación emitidos por el viewModel (tu código original)
+                // Escuchar los eventos de navegación
                 LaunchedEffect(key1 = Unit) {
                     viewModel.navigationEvents.collectLatest { event ->
                         when (event) {
+
                             is NavigationEvent.NavigateTo -> {
-                                navController.navigate(route = event.route.route) {
+                                navController.navigate(
+                                    route = event.route.route
+                                ) {
                                     event.popUpToRoute?.let {
                                         popUpTo(route = it.route) {
                                             inclusive = event.inclusive
                                         }
                                     }
+
                                     launchSingleTop = event.singleTop
                                     restoreState = true
                                 }
                             }
-                            is NavigationEvent.PopBackStack -> navController.popBackStack()
-                            is NavigationEvent.NavigateUp -> navController.navigateUp()
+
+                            is NavigationEvent.PopBackStack -> {
+                                navController.popBackStack()
+                            }
+
+                            is NavigationEvent.NavigateUp -> {
+                                navController.navigateUp()
+                            }
                         }
                     }
                 }
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    // Agregamos el Box para aplicar el padding interno que requiere Scaffold
-                    Box(modifier = Modifier.padding(innerPadding)) {
+                Scaffold(
+                    modifier = Modifier.fillMaxSize()
+                ) { innerPadding ->
+
+                    Box(
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+
                         NavHost(
                             navController = navController,
-                            startDestination = Screen.Home.route // Aquí puedes poner "registro" si quieres que sea la pantalla inicial
+                            startDestination = Screen.Home.route
                         ) {
-                            // --- Tus pantallas originales ---
+
+                            // Pantalla Inicio
                             composable(route = Screen.Home.route) {
-                                HomeScreen(navController = navController, viewModel = viewModel)
-                            }
-                            composable(route = Screen.Profile.route) {
-                                ProfileScreen(navController = navController, viewModel = viewModel)
-                            }
-                            composable(route = Screen.Settings.route) {
-                                SettingsScreen(navController = navController, viewModel = viewModel)
+                                HomeScreen(
+                                    navController = navController,
+                                    viewModel = viewModel
+                                )
                             }
 
-                            // --- Las nuevas pantallas de la guía ---
+                            // Pantalla Perfil
+                            composable(route = Screen.Profile.route) {
+                                ProfileScreen(
+                                    navController = navController,
+                                    viewModel = viewModel,
+                                    imagenViewModel = imagenViewModel
+                                )
+                            }
+
+                            // Pantalla Configuración
+                            composable(route = Screen.Settings.route) {
+                                SettingsScreen(
+                                    navController = navController,
+                                    viewModel = viewModel
+                                )
+                            }
+
+                            // Pantalla Registro
                             composable(route = "registro") {
-                                RegistroScreen(navController = navController, viewModel = usuarioViewModel)
+                                RegistroScreen(
+                                    navController = navController,
+                                    viewModel = usuarioViewModel
+                                )
                             }
+
+                            // Pantalla Resumen
                             composable(route = "resumen") {
-                                ResumenScreen(viewModel = usuarioViewModel)
+                                ResumenScreen(
+                                    viewModel = usuarioViewModel
+                                )
                             }
+
+                            // Pantalla Animaciones - Guía 12
                             composable(route = Screen.Animaciones.route) {
                                 PantallaPrincipal()
                             }
+
+                            // Pantalla Cámara - Guía 13
                             composable(route = Screen.Camara.route) {
                                 CamaraScreen()
                             }
