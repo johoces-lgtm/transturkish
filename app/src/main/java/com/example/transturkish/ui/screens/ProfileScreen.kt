@@ -4,6 +4,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -39,7 +40,7 @@ fun ProfileScreen(
         mutableIntStateOf(1)
     }
 
-    // Observar la imagen almacenada en ImagenViewModel
+    // Guía 13: Observar la imagen almacenada en ImagenViewModel
     val imagenUri by imagenViewModel.imagenUri.collectAsStateWithLifecycle()
 
     // Dirección temporal donde la cámara guardará la fotografía
@@ -49,7 +50,7 @@ fun ProfileScreen(
 
     val context = LocalContext.current
 
-    // Seleccionar una imagen desde la galería
+    // Guía 13: Seleccionar una imagen desde la galería
     val seleccionarImagen = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
     ) { uri ->
@@ -58,7 +59,7 @@ fun ProfileScreen(
         }
     }
 
-    // Tomar una fotografía y guardarla en un archivo temporal
+    // Guía 13: Tomar una fotografía con TakePicture()
     val lanzarCamara = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
     ) { fotografiaGuardada ->
@@ -107,18 +108,31 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
+
             Text("Bienvenido al Perfil")
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Componente reutilizable de la Guía 13
+            // Guía 13: Mostrar fotografía circular o ícono predeterminado
             ImagenInteligente(
                 imagenUri = imagenUri
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Botón para seleccionar una imagen de galería
+            // Guía 12: Mostrar mensaje con animación
+            AnimatedVisibility(
+                visible = imagenUri != null
+            ) {
+                Text(
+                    text = "¡Imagen de perfil cargada correctamente!",
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            // Botón para seleccionar una imagen desde la galería
             Button(
                 onClick = {
                     seleccionarImagen.launch("image/*")
@@ -147,7 +161,7 @@ fun ProfileScreen(
     }
 }
 
-// Crear un archivo temporal y obtener una Uri mediante FileProvider
+// Guía 13: Crear archivo temporal para la cámara
 fun crearUriFoto(context: Context): Uri {
 
     val carpeta = File(context.cacheDir, "imagenes")
