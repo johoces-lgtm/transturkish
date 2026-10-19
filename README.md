@@ -1,111 +1,115 @@
-
-# Transturkish
+# TransTurkish
 
 ## Descripción del proyecto
 
-Transturkish es una aplicación móvil educativa para Android
-que busca apoyar el aprendizaje de vocabulario básico
-del idioma turco al español.
+TransTurkish es una aplicación móvil educativa para Android, desarrollada para apoyar el aprendizaje de vocabulario básico del idioma turco al español mediante preguntas interactivas.
 
-El proyecto se desarrolla en la asignatura
-Programación de Aplicaciones Móviles.
+El proyecto se desarrolla en la asignatura **Programación de Aplicaciones Móviles**, utilizando Kotlin, Jetpack Compose y Android Studio.
 
 ## Tecnologías utilizadas
 
-- Android Studio
 - Kotlin
-- Jetpack Compose
-- Material 3
+- Android Studio
+- Jetpack Compose y Material 3
 - Navigation Compose
 - Arquitectura MVVM
 - ViewModel y StateFlow
 - DataStore Preferences
+- Recursos nativos de Android: cámara y galería
+- Git y GitHub para trabajo colaborativo
 
 ## Pantallas de la aplicación
 
 ### Inicio
-Presenta Transturkish y permite acceder al minijuego,
-al formulario de registro y al perfil.
 
-### Minijuego
-Permite practicar vocabulario turco-español mediante
-cuatro preguntas con tres alternativas cada una.
+Pantalla de bienvenida con accesos al minijuego, al formulario de registro y al perfil del usuario.
+
+### Minijuego de traducción
+
+Actividad interactiva para practicar cuatro palabras turcas y sus traducciones al español.
 
 Incluye:
-- Respuestas correctas e incorrectas.
-- Mensajes visuales de retroalimentación.
-- Colores verde y rojo con animaciones.
+- Tres alternativas por pregunta.
+- Validación de respuestas correctas e incorrectas.
+- Retroalimentación visual en verde y rojo.
+- Animaciones con Jetpack Compose.
 - Puntaje acumulado.
-- Opción para volver a jugar.
-- Botón para regresar a Inicio.
+- Opción para volver a jugar y regresar al inicio.
 
 ### Registro
-Formulario que solicita nombre, correo electrónico,
-contraseña y dirección.
 
-Incluye validaciones, mensajes de error y aceptación
-de términos y condiciones.
+Formulario que solicita nombre, correo electrónico, contraseña y dirección.
+
+Incluye validación de campos, contraseña de mínimo seis caracteres, aceptación de términos y condiciones y mensajes de error.
 
 ### Resumen
-Muestra los datos del formulario utilizando
-un ViewModel compartido.
+
+Muestra los datos ingresados en Registro mediante un `UsuarioViewModel` compartido.
 
 ### Perfil
-Pantalla destinada a utilizar recursos nativos
-del dispositivo, como la cámara y la galería.
 
-## Funcionalidades implementadas en la rama de Joaquín
+Permite utilizar la cámara y seleccionar fotografías desde la galería del dispositivo.
 
-- Navegación entre las pantallas principales.
-- Formulario con validaciones.
-- Contraseña de mínimo seis caracteres.
-- Validación de términos y condiciones.
-- Mensajes de error en los campos.
-- Datos compartidos entre Registro y Resumen.
-- Minijuego de cuatro palabras turcas.
-- Puntaje y retroalimentación de respuestas.
-- Animaciones de aparición y cambio de color.
-- Navegación entre Inicio y Minijuego.
-- Interfaz de Inicio simplificada.
+Utiliza `TakePicture()`, `FileProvider`, `ImagenViewModel`, `StateFlow` y el componente reutilizable `ImagenInteligente`.
 
-## Avances en la rama de Alonso
+También incluye una animación de confirmación al cargar una imagen.
 
-- Implementación de ejercicios de animaciones y estados.
-- Implementación de DataStore Preferences.
-- Integración de cámara y galería en Perfil.
-- Uso de TakePicture y FileProvider.
+## Contenidos aplicados de las guías
 
-Estos cambios se desarrollan en una rama separada
-y están pendientes de integración final.
+- **Guía 7:** estructura del proyecto y herramientas colaborativas.
+- **Guía 8:** construcción de interfaces con Jetpack Compose.
+- **Guía 9:** adaptabilidad del diseño.
+- **Guía 10:** navegación entre pantallas.
+- **Guía 11:** formularios, validaciones y estado compartido.
+- **Guía 12:** animaciones, estados y DataStore.
+- **Guía 13:** integración de cámara y galería.
 
-## Pendiente
+## Arquitectura del proyecto
 
-- Integrar los avances de ambas ramas.
-- Completar los componentes pendientes de la Guía 13.
-- Revisar la integración final de DataStore.
-- Comprobar el funcionamiento de la aplicación integrada.
+La aplicación organiza sus funcionalidades mediante pantallas, componentes reutilizables y ViewModels.
 
-## Organización del trabajo
+`UsuarioViewModel` administra el estado y las validaciones del formulario.
 
-El desarrollo se realiza colaborativamente mediante
-GitHub, utilizando ramas de trabajo.
+`ImagenViewModel` administra el estado de la imagen utilizada en Perfil.
 
-### Joaquín
-- Inicio y navegación.
+El proyecto incluye una implementación de DataStore Preferences para el manejo persistente de preferencias.
+
+## Trabajo colaborativo
+
+**Joaquín:**
+- Navegación entre pantallas.
+- Inicio.
 - Registro y validaciones.
 - Resumen.
 - Minijuego de traducción.
-- README e integración final.
+- Documentación e integración.
 
-Rama: feature/joaquin-navegacion
-
-### Alonso
+**Alonso:**
 - Animaciones y estados.
-- DataStore.
+- Implementación de DataStore.
 - Cámara y galería.
-- Componentes asociados a recursos nativos.
+- Integración de imágenes mediante ViewModel y componentes reutilizables.
+- Animación de confirmación en Perfil.
 
-Rama: feature/estado-animaciones
+El trabajo se desarrolló mediante ramas independientes de GitHub y posteriormente se integró en `integracion/transturkish`.
+
+## Pruebas realizadas
+
+La versión integrada fue compilada y probada en un dispositivo Android Xiaomi.
+
+Se comprobaron:
+- Navegación desde Inicio.
+- Funcionamiento del minijuego.
+- Registro, validaciones y Resumen.
+- Captura de fotografías con cámara.
+- Selección de imágenes desde galería.
+- Navegación y conservación de la imagen de Perfil durante la navegación.
+
+## Estado del proyecto
+
+Las funcionalidades principales se encuentran integradas y fueron probadas en conjunto.
+
+Se mantiene la revisión final de la persistencia de DataStore y de la versión definitiva destinada a entrega.
 
 ## Repositorio
 
