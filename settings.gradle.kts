@@ -22,5 +22,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Guia 9"
+rootProject.name = "TransTurkish"
 include(":app")

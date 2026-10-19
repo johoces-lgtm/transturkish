@@ -27,8 +27,10 @@ import com.example.transturkish.ui.screens.CamaraScreen
 import com.example.transturkish.ui.theme.Guia9Theme
 import com.example.transturkish.viewmodel.MainViewModel
 import com.example.transturkish.viewmodel.UsuarioViewModel
+import com.example.transturkish.viewmodel.ImagenViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.example.transturkish.ui.components.MiniJuegoTraduccion
+
 
 class MainActivity : ComponentActivity() {
 
@@ -46,6 +48,9 @@ class MainActivity : ComponentActivity() {
 
                 // ViewModel compartido para el formulario
                 val usuarioViewModel: UsuarioViewModel = viewModel()
+
+                // ViewModel compartido para las imágenes del perfil
+                val imagenViewModel: ImagenViewModel = viewModel()
 
                 // Controlador de navegación
                 val navController = rememberNavController()
@@ -116,9 +121,11 @@ class MainActivity : ComponentActivity() {
                             composable(Screen.Profile.route) {
                                 ProfileScreen(
                                     navController = navController,
-                                    viewModel = viewModel
+                                    viewModel = viewModel,
+                                    imagenViewModel = imagenViewModel
                                 )
                             }
+
 
                             // Pantalla de configuración
                             composable(Screen.Settings.route) {
