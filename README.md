@@ -1,115 +1,262 @@
-# TransTurkish
+# TransTurkish 🇹🇷
 
 ## Descripción del proyecto
 
-TransTurkish es una aplicación móvil educativa para Android, desarrollada para apoyar el aprendizaje de vocabulario básico del idioma turco al español mediante preguntas interactivas.
+**TransTurkish** es una aplicación móvil educativa desarrollada para Android, cuyo objetivo es apoyar el aprendizaje de vocabulario básico del idioma turco al español mediante actividades interactivas.
 
-El proyecto se desarrolla en la asignatura **Programación de Aplicaciones Móviles**, utilizando Kotlin, Jetpack Compose y Android Studio.
+El proyecto fue desarrollado para la asignatura **Programación de Aplicaciones Móviles**, utilizando Kotlin, Jetpack Compose y Android Studio.
+
+La aplicación permite practicar traducciones, registrar información mediante formularios y utilizar recursos nativos del dispositivo, como la cámara y la galería.
+
+## Integrantes
+
+- **Joaquín Hoces**
+- **Alonso Payacán**
 
 ## Tecnologías utilizadas
 
-- Kotlin
-- Android Studio
-- Jetpack Compose y Material 3
-- Navigation Compose
-- Arquitectura MVVM
-- ViewModel y StateFlow
-- DataStore Preferences
-- Recursos nativos de Android: cámara y galería
-- Git y GitHub para trabajo colaborativo
+- **Android Studio:** entorno de desarrollo.
+- **Kotlin:** lenguaje de programación.
+- **Jetpack Compose:** construcción de interfaces.
+- **Material 3:** componentes visuales.
+- **Navigation Compose:** navegación entre pantallas.
+- **MVVM:** separación de interfaz y lógica.
+- **ViewModel y StateFlow:** administración y observación de estados.
+- **DataStore Preferences:** almacenamiento local de preferencias.
+- **Activity Result API:** integración de cámara y galería.
+- **Git y GitHub:** control de versiones y colaboración.
 
 ## Pantallas de la aplicación
 
-### Inicio
+### 1. Inicio
 
-Pantalla de bienvenida con accesos al minijuego, al formulario de registro y al perfil del usuario.
+Pantalla principal de bienvenida a TransTurkish.
 
-### Minijuego de traducción
+Permite acceder a:
+- Minijuego de traducción.
+- Registro de usuario.
+- Perfil.
+- Preferencias mediante el menú lateral.
 
-Actividad interactiva para practicar cuatro palabras turcas y sus traducciones al español.
+### 2. Minijuego de traducción
 
-Incluye:
+Permite practicar vocabulario básico del turco al español.
+
+**Características:**
+- Cuatro palabras turcas.
 - Tres alternativas por pregunta.
-- Validación de respuestas correctas e incorrectas.
-- Retroalimentación visual en verde y rojo.
-- Animaciones con Jetpack Compose.
+- Comprobación de respuestas.
+- Mensajes verdes para respuestas correctas.
+- Mensajes rojos para respuestas incorrectas.
+- Animaciones con `AnimatedVisibility` y `animateColorAsState`.
 - Puntaje acumulado.
-- Opción para volver a jugar y regresar al inicio.
+- Opción para volver a jugar.
+- Botón para regresar a Inicio.
 
-### Registro
+### 3. Registro
 
-Formulario que solicita nombre, correo electrónico, contraseña y dirección.
+Formulario que solicita:
+- Nombre.
+- Correo electrónico.
+- Contraseña.
+- Dirección.
+- Aceptación de términos y condiciones.
 
-Incluye validación de campos, contraseña de mínimo seis caracteres, aceptación de términos y condiciones y mensajes de error.
+**Validaciones implementadas:**
+- Campos obligatorios.
+- Correo con comprobación básica de formato.
+- Contraseña de al menos seis caracteres.
+- Aceptación obligatoria de términos y condiciones.
+- Mensajes de error e íconos en los campos.
 
-### Resumen
+Las validaciones se encuentran centralizadas en `UsuarioViewModel.kt`.
 
-Muestra los datos ingresados en Registro mediante un `UsuarioViewModel` compartido.
+El formulario dispone de desplazamiento vertical y un botón Registrar accesible cuando se muestra el teclado.
 
-### Perfil
+### 4. Resumen
 
-Permite utilizar la cámara y seleccionar fotografías desde la galería del dispositivo.
+Muestra los datos ingresados en Registro mediante un ViewModel compartido.
 
-Utiliza `TakePicture()`, `FileProvider`, `ImagenViewModel`, `StateFlow` y el componente reutilizable `ImagenInteligente`.
+La contraseña se presenta mediante asteriscos.
 
-También incluye una animación de confirmación al cargar una imagen.
+### 5. Perfil
 
-## Contenidos aplicados de las guías
+Permite utilizar recursos nativos del dispositivo.
 
-- **Guía 7:** estructura del proyecto y herramientas colaborativas.
-- **Guía 8:** construcción de interfaces con Jetpack Compose.
-- **Guía 9:** adaptabilidad del diseño.
-- **Guía 10:** navegación entre pantallas.
-- **Guía 11:** formularios, validaciones y estado compartido.
-- **Guía 12:** animaciones, estados y DataStore.
-- **Guía 13:** integración de cámara y galería.
+**Funcionalidades:**
+- Seleccionar fotografías desde la galería.
+- Tomar fotografías con la cámara.
+- Mostrar la imagen seleccionada o capturada.
+- Presentar un ícono predeterminado cuando no existe una fotografía.
+- Mostrar un mensaje de confirmación animado.
+
+Se utilizan:
+- `ActivityResultContracts.GetContent()`.
+- `ActivityResultContracts.TakePicture()`.
+- `FileProvider`.
+- `ImagenViewModel`.
+- `StateFlow`.
+- El componente reutilizable `ImagenInteligente`.
 
 ## Arquitectura del proyecto
 
-La aplicación organiza sus funcionalidades mediante pantallas, componentes reutilizables y ViewModels.
+El proyecto utiliza los principios de la arquitectura **MVVM (Model-View-ViewModel)** para separar la lógica de la interfaz.
 
-`UsuarioViewModel` administra el estado y las validaciones del formulario.
+### ViewModels principales
 
-`ImagenViewModel` administra el estado de la imagen utilizada en Perfil.
+**UsuarioViewModel.kt**
 
-El proyecto incluye una implementación de DataStore Preferences para el manejo persistente de preferencias.
+Administra los datos del formulario, las validaciones y el estado compartido entre Registro y Resumen.
 
-## Trabajo colaborativo
+**ImagenViewModel.kt**
 
-**Joaquín:**
+Administra el estado de la imagen seleccionada o capturada en Perfil.
+
+**EstadoViewModel.kt**
+
+Administra el estado de una preferencia y utiliza DataStore para guardar y recuperar su valor.
+
+**MainViewModel.kt**
+
+Gestiona eventos de navegación entre las pantallas.
+
+### Componentes reutilizables
+
+**MiniJuegoTraduccion.kt**
+
+Contiene la actividad interactiva de traducción turco-español.
+
+**ImagenInteligente.kt**
+
+Muestra una fotografía circular cuando existe una imagen o un ícono cuando no se ha seleccionado ninguna.
+
+## Persistencia local con DataStore
+
+TransTurkish implementa **DataStore Preferences** para almacenar localmente un estado booleano.
+
+La funcionalidad está disponible en:
+
+**Inicio → Menú lateral → Preferencias**
+
+### Comprobación de persistencia
+
+1. Abrir TransTurkish.
+2. Entrar a Preferencias.
+3. Presionar el botón Activar.
+4. Comprobar que el botón cambie a Desactivar.
+5. Cerrar completamente la aplicación.
+6. Volver a abrirla.
+7. Entrar nuevamente a Preferencias.
+8. Comprobar que el botón siga mostrando Desactivar.
+
+Esta prueba se realizó correctamente en un dispositivo Android Xiaomi, confirmando que el estado se recupera después de cerrar y volver a abrir la aplicación.
+
+## Contenidos aplicados de las guías
+
+| Guía | Contenido aplicado |
+|---|---|
+| Guía 7 | Configuración del proyecto, MVVM y herramientas colaborativas |
+| Guía 8 | Construcción visual con Jetpack Compose |
+| Guía 9 | Diseño adaptable y organización de pantallas |
+| Guía 10 | Navegación mediante NavHost y NavController |
+| Guía 11 | Formularios, validaciones y estado compartido |
+| Guía 12 | Animaciones, estados y DataStore |
+| Guía 13 | Integración de cámara y galería |
+
+## Distribución del trabajo
+
+El proyecto se desarrolló colaborativamente mediante GitHub, utilizando ramas independientes.
+
+### Joaquín Hoces
+
 - Navegación entre pantallas.
-- Inicio.
+- Pantalla Inicio.
 - Registro y validaciones.
-- Resumen.
+- Pantalla Resumen.
 - Minijuego de traducción.
-- Documentación e integración.
+- Animaciones del minijuego.
+- Mejoras de adaptabilidad.
+- Documentación README.
+- Integración de las ramas.
 
-**Alonso:**
-- Animaciones y estados.
-- Implementación de DataStore.
-- Cámara y galería.
-- Integración de imágenes mediante ViewModel y componentes reutilizables.
+### Alonso Payacán
+
+- Implementación de animaciones y estados.
+- DataStore Preferences.
+- Integración de cámara y galería.
+- Configuración de FileProvider.
+- ImagenViewModel y StateFlow.
+- Componente ImagenInteligente.
 - Animación de confirmación en Perfil.
 
-El trabajo se desarrolló mediante ramas independientes de GitHub y posteriormente se integró en `integracion/transturkish`.
+### Organización con GitHub
+
+Se utilizaron las siguientes ramas:
+
+- `feature/joaquin-navegacion`
+- `feature/estado-animaciones`
+- `integracion/transturkish`
+- `main`
+
+Los avances de ambos integrantes fueron integrados en `main`, que corresponde a la rama principal del repositorio.
+
+## Instrucciones para ejecutar la aplicación
+
+### Requisitos
+
+- Android Studio.
+- Android SDK compatible con la configuración del proyecto.
+- Dispositivo Android o emulador.
+
+### Pasos de ejecución
+
+1. Ingresar al repositorio de GitHub:
+
+   https://github.com/johoces-lgtm/transturkish
+
+2. Clonar el repositorio o descargar el proyecto en formato ZIP.
+
+3. Abrir Android Studio.
+
+4. Seleccionar **Open** y abrir la carpeta del proyecto.
+
+5. Comprobar que se esté utilizando la rama `main`.
+
+6. Esperar a que finalice la sincronización de Gradle.
+
+7. Conectar un dispositivo Android mediante USB o iniciar un emulador.
+
+8. Seleccionar la configuración de ejecución `app`.
+
+9. Presionar **Run** para compilar, instalar y ejecutar TransTurkish.
 
 ## Pruebas realizadas
 
-La versión integrada fue compilada y probada en un dispositivo Android Xiaomi.
+La aplicación integrada fue probada en un dispositivo Android Xiaomi.
 
-Se comprobaron:
-- Navegación desde Inicio.
-- Funcionamiento del minijuego.
-- Registro, validaciones y Resumen.
-- Captura de fotografías con cámara.
-- Selección de imágenes desde galería.
-- Navegación y conservación de la imagen de Perfil durante la navegación.
+Se comprobaron las siguientes funcionalidades:
+
+- Inicio y navegación.
+- Minijuego de cuatro preguntas.
+- Puntaje y mensajes de respuesta.
+- Animaciones y colores del minijuego.
+- Formulario de Registro.
+- Validación de campos obligatorios.
+- Validación de correo electrónico.
+- Validación de contraseña.
+- Aceptación de términos y condiciones.
+- Visualización de datos en Resumen.
+- Selección de fotografías desde la galería.
+- Captura de fotografías mediante la cámara.
+- Visualización de imágenes en Perfil.
+- Navegación y conservación del estado de imagen durante la navegación.
+- Persistencia local con DataStore después de cerrar y volver a abrir la aplicación.
 
 ## Estado del proyecto
 
-Las funcionalidades principales se encuentran integradas y fueron probadas en conjunto.
+Las funcionalidades principales de TransTurkish se encuentran integradas en la rama `main` y han sido probadas en conjunto.
 
-Se mantiene la revisión final de la persistencia de DataStore y de la versión definitiva destinada a entrega.
+El proyecto utiliza las herramientas y los conceptos trabajados durante las Guías 7 a 13 de la asignatura Programación de Aplicaciones Móviles.
 
 ## Repositorio
 

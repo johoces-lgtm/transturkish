@@ -20,6 +20,9 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.imePadding
 
 
 @Composable
@@ -29,12 +32,36 @@ fun RegistroScreen(navController: NavController, viewModel: UsuarioViewModel) {
     var intentoRegistrar by remember {
         mutableStateOf(false)
     }
+    Scaffold(
+        modifier = Modifier.imePadding(),
+        bottomBar = {
+            Button(
+                onClick = {
+                    intentoRegistrar = true
+
+                    if (viewModel.validarFormulario()) {
+                        navController.navigate("resumen")
+                    }
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text("Registrar")
+            }
+        }
+    ) { innerPadding ->
+
+        Column(
+            modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
 
 
-    Column(
-        modifier = Modifier.fillMaxSize().padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
         // Campo nombre
 
         OutlinedTextField(
@@ -141,21 +168,6 @@ fun RegistroScreen(navController: NavController, viewModel: UsuarioViewModel) {
                 color = MaterialTheme.colorScheme.error
             )
         }
-
-
-        // Botón Enviar
-        Button(
-            onClick = {
-                intentoRegistrar = true
-
-                if (viewModel.validarFormulario()) {
-                    navController.navigate("resumen")
-                }
-            }
-            ,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Registrar")
-        }
     }
+}
 }

@@ -44,6 +44,16 @@ fun HomeScreen(
                         viewModel.navigateTo(Screen.Profile)
                     }
                 )
+
+                NavigationDrawerItem(
+                    label = { Text("Preferencias") },
+                    selected = false,
+                    onClick = {
+                        scope.launch { drawerState.close() }
+                        viewModel.navigateTo(Screen.Animaciones)
+                    }
+                )
+
             }
         }
     ) {
