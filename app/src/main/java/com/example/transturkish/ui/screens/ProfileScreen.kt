@@ -157,6 +157,19 @@ fun ProfileScreen(
             ) {
                 Text("Tomar fotografía")
             }
+            // Mostrar botón solamente cuando exista una imagen
+            if (imagenUri != null) {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                OutlinedButton(
+                    onClick = {
+                        imagenViewModel.eliminarImagen()
+                    }
+                ) {
+                    Text("Quitar foto del perfil")
+                }
+            }
         }
     }
 }
