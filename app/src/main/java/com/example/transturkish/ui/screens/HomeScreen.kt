@@ -352,16 +352,16 @@ fun HomeScreen(
                     }
                 }
 
-                // Acceso al registro existente
+                // Acceso temporal al inicio de sesión
                 OutlinedButton(
                     onClick = {
-                        navController.navigate("registro")
+                        navController.navigate(Screen.Login.route)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(52.dp)
                 ) {
-                    Text("Crear mi cuenta")
+                    Text("Iniciar sesión")
                 }
             }
         }
