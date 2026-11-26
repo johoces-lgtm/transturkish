@@ -45,6 +45,7 @@ import androidx.navigation.NavController
 import com.example.transturkish.ui.navigation.Screen
 import com.example.transturkish.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
+import com.example.transturkish.ui.components.VocabularioApi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -351,6 +352,8 @@ fun HomeScreen(
                         )
                     }
                 }
+                // Guía 14: Vocabulario obtenido desde nuestra API
+                VocabularioApi()
 
                 // Acceso temporal al inicio de sesión
                 OutlinedButton(
