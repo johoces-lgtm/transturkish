@@ -31,6 +31,7 @@ import com.example.transturkish.viewmodel.ImagenViewModel
 import com.example.transturkish.viewmodel.MainViewModel
 import com.example.transturkish.viewmodel.UsuarioViewModel
 import kotlinx.coroutines.flow.collectLatest
+import com.example.transturkish.ui.screens.DiccionarioScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -97,8 +98,6 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
 
-                        // Todas las rutas deben estar
-                        // dentro de este NavHost
                         NavHost(
                             navController = navController,
                             startDestination = Screen.Home.route
@@ -106,6 +105,13 @@ class MainActivity : ComponentActivity() {
                             // Pantalla de inicio de sesión
                             composable(Screen.Login.route) {
                                 LoginScreen(navController = navController)
+                            }
+
+                            // Pantalla del diccionario
+                            composable(Screen.Diccionario.route) {
+                                DiccionarioScreen(
+                                    navController = navController
+                                )
                             }
 
                             // Pantalla de inicio

@@ -15,6 +15,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.MenuBook
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Settings
@@ -45,7 +46,6 @@ import androidx.navigation.NavController
 import com.example.transturkish.ui.navigation.Screen
 import com.example.transturkish.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
-import com.example.transturkish.ui.components.VocabularioApi
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -352,8 +352,47 @@ fun HomeScreen(
                         )
                     }
                 }
-                // Guía 14: Vocabulario obtenido desde nuestra API
-                VocabularioApi()
+                // Acceso al diccionario
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor =
+                            MaterialTheme.colorScheme.primaryContainer
+                    ),
+                    onClick = {
+                        navController.navigate(
+                            Screen.Diccionario.route
+                        )
+                    }
+                ) {
+
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+                        verticalArrangement =
+                            Arrangement.spacedBy(8.dp)
+                    ) {
+
+                        Icon(
+                            imageVector = Icons.Default.MenuBook,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(32.dp)
+                        )
+
+                        Text(
+                            text = "Diccionario",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = "Explora y amplía tu vocabulario de turco",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+
 
                 // Acceso temporal al inicio de sesión
                 OutlinedButton(

@@ -10,6 +10,7 @@ sealed class Screen(val route: String) {
     // Representa la ruta a la pantalla de Inicio.
     data object Home : Screen(route = "home_page")
     data object Login : Screen(route = "login_page")
+    data object Diccionario : Screen(route = "diccionario_page")
 
     data object Profile : Screen(route = "profile_page")
     // Representa la ruta a la pantalla de Configuración.
