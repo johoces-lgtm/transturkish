@@ -2,12 +2,28 @@ package com.example.transturkish.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -19,8 +35,7 @@ import com.example.transturkish.viewmodel.JuegoViewModel
 
 @Composable
 fun MiniJuegoTraduccion(
-    navController: NavController,
-    viewModel: JuegoViewModel = viewModel()
+    navController: NavController, viewModel: JuegoViewModel = viewModel()
 ) {
 
     val estado by viewModel.estado.collectAsState()
@@ -43,27 +58,113 @@ fun MiniJuegoTraduccion(
             color = MaterialTheme.colorScheme.primary
         )
 
-        if (estado.preguntas.isEmpty()) {
+        // Mostrar las modalidades antes de responder
+        if (estado.preguntaActual == 0 && estado.seleccionada == null && !estado.cargando) {
+
+            Card(
+                modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp),
+
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
+                )
+            ) {
+
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
+                ) {
+
+                    Text(
+                        text = "Elige cómo practicar",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Text(
+                        text = if (estado.origenServidor) {
+                            "Vocabulario del servidor"
+                        } else {
+                            "Práctica sin conexión"
+                        }, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Medium
+                    )
+
+                    Button(
+                        onClick = {
+                            viewModel.cargarPartidaServidor()
+                        }, modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Practicar con servidor")
+                    }
+
+                    OutlinedButton(
+                        onClick = {
+                            viewModel.iniciarPartidaLocal()
+                        }, modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("Practicar sin conexión")
+                    }
+                }
+            }
+        }
+
+// Mostrar errores sin cerrar la aplicación
+        estado.errorServidor?.let { mensaje ->
+
+            Text(
+                text = mensaje,
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+
+// Mostrar el origen durante la partida
+        if (!estado.cargando) {
+
+            Text(
+                text = if (estado.origenServidor) {
+                    "Vocabulario conectado"
+                } else {
+                    "Vocabulario local"
+                },
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
+
+// Estado de carga de la API
+        if (estado.cargando) {
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(24.dp),
+
+                horizontalAlignment = Alignment.CenterHorizontally,
+
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+
+                CircularProgressIndicator()
+
+                Text("Preparando tu partida...")
+            }
+
+        } else if (estado.preguntas.isEmpty()) {
 
             Text("No hay preguntas disponibles")
 
-        } else if (
-            estado.preguntaActual < estado.preguntas.size
-        ) {
+        } else if (estado.preguntaActual < estado.preguntas.size) {
 
-            val pregunta = estado.preguntas[
-                estado.preguntaActual
-            ]
+
+            val pregunta = estado.preguntas[estado.preguntaActual]
 
             val respondida = estado.seleccionada != null
 
-            val esCorrecta =
-                estado.seleccionada == pregunta.respuesta
+            val esCorrecta = estado.seleccionada == pregunta.respuesta
 
             // Encabezado con pregunta y puntaje
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
+                modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween
             ) {
 
                 Text(
@@ -79,31 +180,26 @@ fun MiniJuegoTraduccion(
             }
 
             // Barra de progreso
-            val respondidas = estado.preguntaActual +
-                    if (respondida) 1 else 0
+            val respondidas = estado.preguntaActual + if (respondida) 1 else 0
 
             LinearProgressIndicator(
                 progress = {
-                    respondidas.toFloat() /
-                            estado.preguntas.size
+                    respondidas.toFloat() / estado.preguntas.size
                 },
 
                 modifier = Modifier.fillMaxWidth(),
 
                 color = MaterialTheme.colorScheme.primary,
 
-                trackColor =
-                    MaterialTheme.colorScheme.primaryContainer
+                trackColor = MaterialTheme.colorScheme.primaryContainer
             )
 
             // Tarjeta con palabra en turco
             Card(
-                modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(24.dp),
+                modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(24.dp),
 
                 colors = CardDefaults.cardColors(
-                    containerColor =
-                        MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
 
@@ -112,11 +208,9 @@ fun MiniJuegoTraduccion(
                         .fillMaxWidth()
                         .padding(28.dp),
 
-                    horizontalAlignment =
-                        Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.CenterHorizontally,
 
-                    verticalArrangement =
-                        Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
 
                     Text(
@@ -131,8 +225,7 @@ fun MiniJuegoTraduccion(
                     )
 
                     Text(
-                        text = "Turco → Español",
-                        color = MaterialTheme.colorScheme.primary
+                        text = "Turco → Español", color = MaterialTheme.colorScheme.primary
                     )
                 }
             }
@@ -140,37 +233,28 @@ fun MiniJuegoTraduccion(
             // Alternativas de respuesta
             pregunta.alternativas.forEach { opcion ->
 
-                val colorAlternativa =
-                    if (respondida && opcion == pregunta.respuesta) {
-                        verdeCorrecto
+                val colorAlternativa = if (respondida && opcion == pregunta.respuesta) {
+                    verdeCorrecto
 
-                    } else if (
-                        respondida &&
-                        opcion == estado.seleccionada
-                    ) {
-                        MaterialTheme.colorScheme.error
+                } else if (respondida && opcion == estado.seleccionada) {
+                    MaterialTheme.colorScheme.error
 
-                    } else {
-                        MaterialTheme.colorScheme.primaryContainer
-                    }
+                } else {
+                    MaterialTheme.colorScheme.primaryContainer
+                }
 
-                val colorTexto =
-                    if (respondida && opcion == pregunta.respuesta) {
-                        Color.White
+                val colorTexto = if (respondida && opcion == pregunta.respuesta) {
+                    Color.White
 
-                    } else if (
-                        respondida &&
-                        opcion == estado.seleccionada
-                    ) {
-                        MaterialTheme.colorScheme.onError
+                } else if (respondida && opcion == estado.seleccionada) {
+                    MaterialTheme.colorScheme.onError
 
-                    } else {
-                        MaterialTheme.colorScheme.onPrimaryContainer
-                    }
+                } else {
+                    MaterialTheme.colorScheme.onPrimaryContainer
+                }
 
                 val colorAnimado by animateColorAsState(
-                    targetValue = colorAlternativa,
-                    label = "Color de alternativa"
+                    targetValue = colorAlternativa, label = "Color de alternativa"
                 )
 
                 Button(
@@ -195,8 +279,7 @@ fun MiniJuegoTraduccion(
                 ) {
 
                     Text(
-                        text = opcion,
-                        style = MaterialTheme.typography.titleMedium
+                        text = opcion, style = MaterialTheme.typography.titleMedium
                     )
                 }
             }
@@ -207,8 +290,7 @@ fun MiniJuegoTraduccion(
                 if (respondida) {
 
                     Column(
-                        verticalArrangement =
-                            Arrangement.spacedBy(6.dp)
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
                     ) {
 
                         Text(
@@ -250,10 +332,7 @@ fun MiniJuegoTraduccion(
                 ) {
 
                     Text(
-                        text = if (
-                            estado.preguntaActual ==
-                            estado.preguntas.size - 1
-                        ) {
+                        text = if (estado.preguntaActual == estado.preguntas.size - 1) {
                             "Ver resultados"
                         } else {
                             "Siguiente pregunta"
@@ -271,8 +350,7 @@ fun MiniJuegoTraduccion(
                 shape = RoundedCornerShape(24.dp),
 
                 colors = CardDefaults.cardColors(
-                    containerColor =
-                        MaterialTheme.colorScheme.primaryContainer
+                    containerColor = MaterialTheme.colorScheme.primaryContainer
                 )
             ) {
 
@@ -281,11 +359,9 @@ fun MiniJuegoTraduccion(
                         .fillMaxWidth()
                         .padding(28.dp),
 
-                    horizontalAlignment =
-                        Alignment.CenterHorizontally,
+                    horizontalAlignment = Alignment.CenterHorizontally,
 
-                    verticalArrangement =
-                        Arrangement.spacedBy(16.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
 
                     Text(
@@ -305,9 +381,7 @@ fun MiniJuegoTraduccion(
                         text = "Respuestas correctas"
                     )
 
-                    val porcentaje =
-                        estado.puntaje * 100 /
-                                estado.preguntas.size
+                    val porcentaje = estado.puntaje * 100 / estado.preguntas.size
 
                     Text(
                         text = "$porcentaje% de aciertos",
@@ -315,13 +389,9 @@ fun MiniJuegoTraduccion(
                     )
 
                     Text(
-                        text = if (
-                            estado.puntaje == estado.preguntas.size
-                        ) {
+                        text = if (estado.puntaje == estado.preguntas.size) {
                             "¡Excelente trabajo!"
-                        } else if (
-                            porcentaje >= 50
-                        ) {
+                        } else if (porcentaje >= 50) {
                             "¡Vas por buen camino!"
                         } else {
                             "Sigue practicando, puedes mejorar."

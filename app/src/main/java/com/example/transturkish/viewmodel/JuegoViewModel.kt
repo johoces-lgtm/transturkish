@@ -6,6 +6,11 @@ import com.example.transturkish.model.PreguntaJuego
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import androidx.lifecycle.viewModelScope
+import com.example.transturkish.model.generarPreguntas
+import com.example.transturkish.repository.PalabraRepository
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.launch
 
 class JuegoViewModel : ViewModel() {
 
@@ -86,9 +91,12 @@ class JuegoViewModel : ViewModel() {
     val estado = _estado.asStateFlow()
 
     // Crear una partida con preguntas aleatorias
-    private fun crearPartida(): JuegoUiState {
+    private fun crearPartida(
+        listaPreguntas: List<PreguntaJuego> = preguntas,
+        origenServidor: Boolean = false
+    ): JuegoUiState {
 
-        val preguntasAleatorias = preguntas
+        val preguntasAleatorias = listaPreguntas
             .shuffled()
             .map { pregunta ->
                 pregunta.copy(
@@ -98,8 +106,74 @@ class JuegoViewModel : ViewModel() {
             }
 
         return JuegoUiState(
-            preguntas = preguntasAleatorias
+            preguntas = preguntasAleatorias,
+            origenServidor = origenServidor
         )
+    }
+
+    // Iniciar una partida utilizando nuestra API REST
+    fun cargarPartidaServidor() {
+
+        if (_estado.value.cargando) return
+
+        _estado.update {
+            it.copy(
+                cargando = true,
+                errorServidor = null
+            )
+        }
+
+        viewModelScope.launch {
+
+            try {
+
+                val palabras =
+                    PalabraRepository().obtenerPalabras()
+
+                val nuevasPreguntas =
+                    generarPreguntas(palabras)
+
+                if (nuevasPreguntas.isEmpty()) {
+
+                    _estado.update {
+                        it.copy(
+                            cargando = false,
+                            errorServidor =
+                                "Se necesitan al menos tres traducciones diferentes"
+                        )
+                    }
+
+                } else {
+
+                    _estado.value = crearPartida(
+                        listaPreguntas = nuevasPreguntas,
+                        origenServidor = true
+                    )
+                }
+
+            } catch (e: CancellationException) {
+
+                throw e
+
+            } catch (e: Exception) {
+
+                _estado.update {
+                    it.copy(
+                        cargando = false,
+                        errorServidor =
+                            "No se pudo conectar con el servidor. Puedes practicar sin conexión."
+                    )
+                }
+            }
+        }
+    }
+
+    // Iniciar una partida con las preguntas originales
+    fun iniciarPartidaLocal() {
+
+        if (_estado.value.cargando) return
+
+        _estado.value = crearPartida()
     }
 
     // Comprobar la respuesta seleccionada
@@ -162,6 +236,20 @@ class JuegoViewModel : ViewModel() {
     // Reiniciar completamente la partida
     fun reiniciarJuego() {
 
-        _estado.value = crearPartida()
+        val actual = _estado.value
+
+        if (actual.cargando) return
+
+        if (actual.origenServidor) {
+
+            _estado.value = crearPartida(
+                listaPreguntas = actual.preguntas,
+                origenServidor = true
+            )
+
+        } else {
+
+            _estado.value = crearPartida()
+        }
     }
 }

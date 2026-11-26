@@ -12,5 +12,10 @@ data class JuegoUiState(
     val preguntas: List<PreguntaJuego> = emptyList(),
     val preguntaActual: Int = 0,
     val puntaje: Int = 0,
-    val seleccionada: String? = null
+    val seleccionada: String? = null,
+
+    // Estados de conexión con la API
+    val cargando: Boolean = false,
+    val origenServidor: Boolean = false,
+    val errorServidor: String? = null
 )
