@@ -12,7 +12,10 @@ import com.example.transturkish.repository.PalabraRepository
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.launch
 
-class JuegoViewModel : ViewModel() {
+class JuegoViewModel(
+    private val repository: PalabraRepository =
+        PalabraRepository()
+) : ViewModel() {
 
     // Vocabulario local mientras integramos la API
     private val preguntas = listOf(
@@ -128,7 +131,7 @@ class JuegoViewModel : ViewModel() {
             try {
 
                 val palabras =
-                    PalabraRepository().obtenerPalabras()
+                    repository.obtenerPalabras()
 
                 val nuevasPreguntas =
                     generarPreguntas(palabras)
