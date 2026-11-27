@@ -5,6 +5,9 @@ import com.example.transturkish.data.model.Palabra
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
+import retrofit2.http.DELETE
+import retrofit2.http.Path
 
 interface ApiService {
 
@@ -16,4 +19,14 @@ interface ApiService {
         @Body palabra: NuevaPalabra
     ): Unit
 
+    @PUT("api/palabras/{id}")
+    suspend fun actualizarPalabra(
+        @Path("id") id: Long,
+        @Body palabra: NuevaPalabra
+    ): Unit
+
+    @DELETE("api/palabras/{id}")
+    suspend fun eliminarPalabra(
+        @Path("id") id: Long
+    ): Unit
 }

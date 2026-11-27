@@ -12,12 +12,21 @@ class PalabraRepository {
         )
 
     suspend fun obtenerPalabras(): List<Palabra> {
-
         return apiService.obtenerPalabras()
     }
 
     suspend fun crearPalabra(palabra: NuevaPalabra) {
-
         apiService.crearPalabra(palabra)
+    }
+
+    suspend fun actualizarPalabra(
+        id: Long,
+        palabra: NuevaPalabra
+    ) {
+        apiService.actualizarPalabra(id, palabra)
+    }
+
+    suspend fun eliminarPalabra(id: Long) {
+        apiService.eliminarPalabra(id)
     }
 }

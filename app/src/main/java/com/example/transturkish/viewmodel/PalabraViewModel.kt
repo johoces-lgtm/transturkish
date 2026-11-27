@@ -20,7 +20,10 @@ data class PalabraUiState(
     val turco: String = "",
     val espanol: String = "",
     val errorFormulario: String? = null,
-    val mensaje: String? = null
+    val mensaje: String? = null,
+
+    // Identificador de la palabra que estamos editando
+    val editandoId: Long? = null
 )
 
 class PalabraViewModel : ViewModel() {
@@ -54,6 +57,7 @@ class PalabraViewModel : ViewModel() {
         }
     }
 
+    // Cargar el vocabulario desde Spring Boot
     fun cargarPalabras() {
 
         if (_estado.value.cargando) return
@@ -96,6 +100,41 @@ class PalabraViewModel : ViewModel() {
         }
     }
 
+    // Cargar una palabra en el formulario de edición
+    fun iniciarEdicion(palabra: Palabra) {
+
+        if (_estado.value.cargando) return
+
+        _estado.update {
+            it.copy(
+                editandoId = palabra.id,
+                turco = palabra.turco,
+                espanol = palabra.espanol,
+                errorFormulario = null,
+                mensaje = null,
+                error = null
+            )
+        }
+    }
+
+    // Cancelar la edición y limpiar el formulario
+    fun cancelarEdicion() {
+
+        if (_estado.value.cargando) return
+
+        _estado.update {
+            it.copy(
+                editandoId = null,
+                turco = "",
+                espanol = "",
+                errorFormulario = null,
+                mensaje = null,
+                error = null
+            )
+        }
+    }
+
+    // Crear o actualizar una palabra
     fun guardarPalabra() {
 
         val actual = _estado.value
@@ -111,8 +150,7 @@ class PalabraViewModel : ViewModel() {
 
             _estado.update {
                 it.copy(
-                    errorFormulario =
-                        "Completa ambos campos",
+                    errorFormulario = "Completa ambos campos",
                     mensaje = null
                 )
             }
@@ -133,14 +171,31 @@ class PalabraViewModel : ViewModel() {
 
             try {
 
-                repository.crearPalabra(nuevaPalabra)
+                val id = actual.editandoId
+
+                if (id == null) {
+
+                    repository.crearPalabra(nuevaPalabra)
+
+                } else {
+
+                    repository.actualizarPalabra(
+                        id,
+                        nuevaPalabra
+                    )
+                }
 
                 _estado.update {
                     it.copy(
                         turco = "",
                         espanol = "",
+                        editandoId = null,
                         cargando = false,
-                        mensaje = "Palabra guardada correctamente"
+                        mensaje = if (id == null) {
+                            "Palabra guardada correctamente"
+                        } else {
+                            "Palabra actualizada correctamente"
+                        }
                     )
                 }
 
@@ -156,6 +211,74 @@ class PalabraViewModel : ViewModel() {
                     it.copy(
                         cargando = false,
                         error = "No se pudo guardar la palabra. Actualiza el diccionario antes de reintentar."
+                    )
+                }
+            }
+        }
+    }
+
+    // Eliminar una palabra del servidor
+    fun eliminarPalabra(id: Long) {
+
+        if (_estado.value.cargando) return
+
+        _estado.update {
+            it.copy(
+                cargando = true,
+                error = null,
+                mensaje = null
+            )
+        }
+
+        viewModelScope.launch {
+
+            try {
+
+                repository.eliminarPalabra(id)
+
+                _estado.update {
+
+                    val eliminandoEditada =
+                        it.editandoId == id
+
+                    it.copy(
+                        cargando = false,
+                        editandoId = if (eliminandoEditada) {
+                            null
+                        } else {
+                            it.editandoId
+                        },
+                        turco = if (eliminandoEditada) {
+                            ""
+                        } else {
+                            it.turco
+                        },
+                        espanol = if (eliminandoEditada) {
+                            ""
+                        } else {
+                            it.espanol
+                        },
+                        errorFormulario = if (eliminandoEditada) {
+                            null
+                        } else {
+                            it.errorFormulario
+                        },
+                        mensaje = "Palabra eliminada correctamente"
+                    )
+                }
+
+                cargarPalabras()
+
+            } catch (e: CancellationException) {
+
+                throw e
+
+            } catch (e: Exception) {
+
+                _estado.update {
+                    it.copy(
+                        cargando = false,
+                        error = "No se pudo eliminar la palabra. Actualiza el diccionario antes de reintentar."
                     )
                 }
             }
