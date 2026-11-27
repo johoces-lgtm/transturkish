@@ -32,6 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.transturkish.viewmodel.JuegoViewModel
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material3.Icon
+
 
 @Composable
 fun MiniJuegoTraduccion(
@@ -39,6 +47,14 @@ fun MiniJuegoTraduccion(
 ) {
 
     val estado by viewModel.estado.collectAsState()
+    // Control visual de la selección de modalidad
+    var partidaSolicitada by rememberSaveable {
+        mutableStateOf(false)
+    }
+
+    val mostrarSeleccion =
+        !partidaSolicitada ||
+                (!estado.cargando && estado.errorServidor != null)
 
     val verdeCorrecto = Color(0xFF2E7D32)
 
@@ -58,55 +74,6 @@ fun MiniJuegoTraduccion(
             color = MaterialTheme.colorScheme.primary
         )
 
-        // Mostrar las modalidades antes de responder
-        if (estado.preguntaActual == 0 && estado.seleccionada == null && !estado.cargando) {
-
-            Card(
-                modifier = Modifier.fillMaxWidth(), shape = RoundedCornerShape(20.dp),
-
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer
-                )
-            ) {
-
-                Column(
-                    modifier = Modifier.padding(20.dp),
-                    verticalArrangement = Arrangement.spacedBy(10.dp)
-                ) {
-
-                    Text(
-                        text = "Elige cómo practicar",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
-                    )
-
-                    Text(
-                        text = if (estado.origenServidor) {
-                            "Vocabulario del servidor"
-                        } else {
-                            "Práctica sin conexión"
-                        }, color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Medium
-                    )
-
-                    Button(
-                        onClick = {
-                            viewModel.cargarPartidaServidor()
-                        }, modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Practicar con servidor")
-                    }
-
-                    OutlinedButton(
-                        onClick = {
-                            viewModel.iniciarPartidaLocal()
-                        }, modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text("Practicar sin conexión")
-                    }
-                }
-            }
-        }
-
 // Mostrar errores sin cerrar la aplicación
         estado.errorServidor?.let { mensaje ->
 
@@ -118,7 +85,7 @@ fun MiniJuegoTraduccion(
         }
 
 // Mostrar el origen durante la partida
-        if (!estado.cargando) {
+        if (!estado.cargando && !mostrarSeleccion) {
 
             Text(
                 text = if (estado.origenServidor) {
@@ -149,9 +116,29 @@ fun MiniJuegoTraduccion(
                 Text("Preparando tu partida...")
             }
 
+        } else if (mostrarSeleccion) {
+
+            SelectorModalidad(
+
+                onServidor = {
+
+                    partidaSolicitada = true
+
+                    viewModel.cargarPartidaServidor()
+                },
+
+                onLocal = {
+
+                    viewModel.iniciarPartidaLocal()
+
+                    partidaSolicitada = true
+                }
+            )
+
         } else if (estado.preguntas.isEmpty()) {
 
             Text("No hay preguntas disponibles")
+
 
         } else if (estado.preguntaActual < estado.preguntas.size) {
 
@@ -363,6 +350,12 @@ fun MiniJuegoTraduccion(
 
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
+                    Icon(
+                        imageVector = Icons.Default.EmojiEvents,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.primary,
+                        modifier = Modifier.size(64.dp)
+                    )
 
                     Text(
                         text = "¡Partida completada!",
@@ -412,6 +405,20 @@ fun MiniJuegoTraduccion(
 
                 Text("Volver a jugar")
             }
+            OutlinedButton(
+                onClick = {
+
+                    partidaSolicitada = false
+                },
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(52.dp)
+            ) {
+
+                Text("Cambiar modalidad")
+            }
+
         }
 
         OutlinedButton(
