@@ -2,262 +2,409 @@
 
 ## Descripción del proyecto
 
-**TransTurkish** es una aplicación móvil educativa desarrollada para Android, cuyo objetivo es apoyar el aprendizaje de vocabulario básico del idioma turco al español mediante actividades interactivas.
+TransTurkish es una aplicación móvil educativa para Android,
+orientada al aprendizaje del idioma turco mediante actividades
+interactivas, vocabulario y traducción de textos.
 
-El proyecto fue desarrollado para la asignatura **Programación de Aplicaciones Móviles**, utilizando Kotlin, Jetpack Compose y Android Studio.
-
-La aplicación permite practicar traducciones, registrar información mediante formularios y utilizar recursos nativos del dispositivo, como la cámara y la galería.
+El proyecto integra una aplicación móvil desarrollada en Kotlin
+con un microservicio propio en Spring Boot y una API externa
+de traducción.
 
 ## Integrantes
 
-- **Joaquín Hoces**
-- **Alonso Payacán**
+- Joaquín Hoces
+- Alonso Payacán
 
 ## Tecnologías utilizadas
 
-- **Android Studio:** entorno de desarrollo.
-- **Kotlin:** lenguaje de programación.
-- **Jetpack Compose:** construcción de interfaces.
-- **Material 3:** componentes visuales.
-- **Navigation Compose:** navegación entre pantallas.
-- **MVVM:** separación de interfaz y lógica.
-- **ViewModel y StateFlow:** administración y observación de estados.
-- **DataStore Preferences:** almacenamiento local de preferencias.
-- **Activity Result API:** integración de cámara y galería.
-- **Git y GitHub:** control de versiones y colaboración.
+- Android Studio
+- Kotlin
+- Jetpack Compose
+- Material 3
+- Arquitectura MVVM
+- Navigation Compose
+- ViewModel y StateFlow
+- Kotlin Coroutines
+- DataStore Preferences
+- Retrofit y Gson
+- Spring Boot
+- Base de datos H2
+- MyMemory Translation API
+- Kotest
+- MockK
+- JUnit
+- JaCoCo
+- Compose UI Test
+- Git, GitHub y Trello
 
-## Pantallas de la aplicación
+## Funcionalidades
 
-### 1. Inicio
+### Inicio
 
-Pantalla principal de bienvenida a TransTurkish.
+- Interfaz visual con identidad morada y blanca.
+- Acceso al minijuego, diccionario y traductor.
+- Acceso al perfil y preferencias.
 
-Permite acceder a:
-- Minijuego de traducción.
-- Registro de usuario.
-- Perfil.
-- Preferencias mediante el menú lateral.
+### Minijuego de traducción
 
-### 2. Minijuego de traducción
-
-Permite practicar vocabulario básico del turco al español.
-
-**Características:**
-- Cuatro palabras turcas.
+- Modalidad conectada al servidor.
+- Modalidad sin conexión.
+- Hasta diez preguntas por partida conectada.
+- Diez preguntas en modalidad local.
 - Tres alternativas por pregunta.
-- Comprobación de respuestas.
-- Mensajes verdes para respuestas correctas.
-- Mensajes rojos para respuestas incorrectas.
-- Animaciones con `AnimatedVisibility` y `animateColorAsState`.
-- Puntaje acumulado.
-- Opción para volver a jugar.
-- Botón para regresar a Inicio.
+- Preguntas y alternativas aleatorias.
+- Animaciones de respuestas correctas e incorrectas.
+- Barra de progreso y puntaje.
+- Resultado final y porcentaje de aciertos.
+- Reinicio de partida y cambio de modalidad.
 
-### 3. Registro
+### Diccionario
 
-Formulario que solicita:
-- Nombre.
-- Correo electrónico.
-- Contraseña.
-- Dirección.
-- Aceptación de términos y condiciones.
+- Consulta de vocabulario desde Spring Boot.
+- Creación de palabras.
+- Edición de palabras existentes.
+- Eliminación con confirmación.
+- Validación de campos obligatorios.
+- Indicadores de carga y mensajes de error.
+- Actualización del vocabulario utilizado por el minijuego.
 
-**Validaciones implementadas:**
-- Campos obligatorios.
-- Correo con comprobación básica de formato.
-- Contraseña de al menos seis caracteres.
-- Aceptación obligatoria de términos y condiciones.
-- Mensajes de error e íconos en los campos.
+### Traductor externo
 
-Las validaciones se encuentran centralizadas en `UsuarioViewModel.kt`.
+- Traducción del turco al español.
+- Traducción del español al turco.
+- Inversión de idiomas.
+- Traducción de palabras y frases.
+- Validación de texto vacío.
+- Validación del límite de 500 bytes.
+- Indicadores de carga y resultado animado.
+- Consumo independiente del microservicio propio.
 
-El formulario dispone de desplazamiento vertical y un botón Registrar accesible cuando se muestra el teclado.
+### Login y registro
 
-### 4. Resumen
+- Formularios reactivos.
+- Validación de correo electrónico.
+- Validación de contraseña.
+- Validación de campos obligatorios.
+- Pantalla de resumen del registro.
 
-Muestra los datos ingresados en Registro mediante un ViewModel compartido.
+La autenticación real con el servidor se encuentra pendiente
+de integración.
 
-La contraseña se presenta mediante asteriscos.
+### Perfil
 
-### 5. Perfil
+- Captura de fotografías mediante la cámara.
+- Selección de fotografías desde la galería.
+- Visualización de la imagen de perfil.
+- Uso de Activity Result API y FileProvider.
 
-Permite utilizar recursos nativos del dispositivo.
+### Preferencias
 
-**Funcionalidades:**
-- Seleccionar fotografías desde la galería.
-- Tomar fotografías con la cámara.
-- Mostrar la imagen seleccionada o capturada.
-- Presentar un ícono predeterminado cuando no existe una fotografía.
-- Mostrar un mensaje de confirmación animado.
+- Administración de estados.
+- Persistencia local mediante DataStore Preferences.
 
-Se utilizan:
-- `ActivityResultContracts.GetContent()`.
-- `ActivityResultContracts.TakePicture()`.
-- `FileProvider`.
-- `ImagenViewModel`.
-- `StateFlow`.
-- El componente reutilizable `ImagenInteligente`.
+## Arquitectura
 
-## Arquitectura del proyecto
+La aplicación utiliza MVVM para separar la interfaz visual,
+la lógica de negocio y el acceso a datos.
 
-El proyecto utiliza los principios de la arquitectura **MVVM (Model-View-ViewModel)** para separar la lógica de la interfaz.
+### Organización de paquetes
 
-### ViewModels principales
+- data/model: modelos de datos de las API.
+- data/remote: servicios e instancias de Retrofit.
+- repository: acceso a los servicios remotos.
+- model: estados y lógica del dominio.
+- viewmodel: administración de estados y lógica.
+- ui/screens: pantallas de la aplicación.
+- ui/components: componentes reutilizables.
+- ui/navigation: rutas y eventos de navegación.
+- ui/theme: colores y estilos visuales.
 
-**UsuarioViewModel.kt**
+### Flujo de información
 
-Administra los datos del formulario, las validaciones y el estado compartido entre Registro y Resumen.
+Interfaz Compose → ViewModel → Repository → Retrofit → API
 
-**ImagenViewModel.kt**
+Las respuestas se procesan en el ViewModel y se reflejan
+en la interfaz mediante estados observables.
 
-Administra el estado de la imagen seleccionada o capturada en Perfil.
+## Microservicio propio
 
-**EstadoViewModel.kt**
+El backend de TransTurkish está desarrollado en Spring Boot
+y utiliza una base de datos H2.
 
-Administra el estado de una preferencia y utiliza DataStore para guardar y recuperar su valor.
+Su responsabilidad es administrar el vocabulario utilizado
+por el diccionario y el minijuego conectado.
 
-**MainViewModel.kt**
+Repositorio del backend:
 
-Gestiona eventos de navegación entre las pantallas.
+https://github.com/Alonso28-py/transturkish-backend
 
-### Componentes reutilizables
+### URL de desarrollo
 
-**MiniJuegoTraduccion.kt**
+Desde el computador:
 
-Contiene la actividad interactiva de traducción turco-español.
+    http://localhost:8080/
 
-**ImagenInteligente.kt**
+Desde el emulador Android:
 
-Muestra una fotografía circular cuando existe una imagen o un ícono cuando no se ha seleccionado ninguna.
+    http://10.0.2.2:8080/
 
-## Persistencia local con DataStore
+La dirección 10.0.2.2 permite al emulador acceder al
+servidor ejecutado en el computador anfitrión.
 
-TransTurkish implementa **DataStore Preferences** para almacenar localmente un estado booleano.
+### Endpoints utilizados por la aplicación
 
-La funcionalidad está disponible en:
+| Método | Endpoint | Descripción |
+|--------|----------|-------------|
+| GET | /api/palabras | Consultar vocabulario |
+| POST | /api/palabras | Crear una palabra |
+| PUT | /api/palabras/{id} | Actualizar una palabra |
+| DELETE | /api/palabras/{id} | Eliminar una palabra |
 
-**Inicio → Menú lateral → Preferencias**
+### Ejemplo de datos
 
-### Comprobación de persistencia
+    {
+        "id": 1,
+        "turco": "Merhaba",
+        "espanol": "Hola"
+    }
 
-1. Abrir TransTurkish.
-2. Entrar a Preferencias.
-3. Presionar el botón Activar.
-4. Comprobar que el botón cambie a Desactivar.
-5. Cerrar completamente la aplicación.
-6. Volver a abrirla.
-7. Entrar nuevamente a Preferencias.
-8. Comprobar que el botón siga mostrando Desactivar.
+Para crear o actualizar una palabra, la aplicación envía
+el texto en turco y su traducción al español.
 
-Esta prueba se realizó correctamente en un dispositivo Android Xiaomi, confirmando que el estado se recupera después de cerrar y volver a abrir la aplicación.
+## API externa
 
-## Contenidos aplicados de las guías
+### MyMemory Translation API
 
-| Guía | Contenido aplicado |
-|---|---|
-| Guía 7 | Configuración del proyecto, MVVM y herramientas colaborativas |
-| Guía 8 | Construcción visual con Jetpack Compose |
-| Guía 9 | Diseño adaptable y organización de pantallas |
-| Guía 10 | Navegación mediante NavHost y NavController |
-| Guía 11 | Formularios, validaciones y estado compartido |
-| Guía 12 | Animaciones, estados y DataStore |
-| Guía 13 | Integración de cámara y galería |
+Servicio utilizado para traducir palabras y frases entre
+turco y español.
 
-## Distribución del trabajo
+URL base:
 
-El proyecto se desarrolló colaborativamente mediante GitHub, utilizando ramas independientes.
+    https://api.mymemory.translated.net/
 
-### Joaquín Hoces
+Endpoint:
 
-- Navegación entre pantallas.
-- Pantalla Inicio.
-- Registro y validaciones.
-- Pantalla Resumen.
-- Minijuego de traducción.
-- Animaciones del minijuego.
-- Mejoras de adaptabilidad.
-- Documentación README.
-- Integración de las ramas.
+    GET /get
 
-### Alonso Payacán
+Parámetros:
 
-- Implementación de animaciones y estados.
-- DataStore Preferences.
-- Integración de cámara y galería.
-- Configuración de FileProvider.
-- ImagenViewModel y StateFlow.
-- Componente ImagenInteligente.
-- Animación de confirmación en Perfil.
+| Parámetro | Descripción |
+|-----------|-------------|
+| q | Texto que se desea traducir |
+| langpair | Idiomas de origen y destino |
 
-### Organización con GitHub
+Direcciones disponibles:
 
-Se utilizaron las siguientes ramas:
+- Turco a español: tr%7Ces
+- Español a turco: es%7Ctr
 
-- `feature/joaquin-navegacion`
-- `feature/estado-animaciones`
-- `integracion/transturkish`
-- `main`
+Ejemplo de consulta:
 
-Los avances de ambos integrantes fueron integrados en `main`, que corresponde a la rama principal del repositorio.
+    https://api.mymemory.translated.net/get?q=Merhaba&langpair=tr%7Ces
 
-## Instrucciones para ejecutar la aplicación
+El traductor utiliza una instancia de Retrofit independiente
+del microservicio propio.
+
+Documentación oficial:
+
+https://mymemory.translated.net/doc/spec.php
+
+El servicio externo tiene límites de uso y requiere conexión
+a Internet. No se deben enviar datos confidenciales.
+
+## Instrucciones de ejecución
 
 ### Requisitos
 
 - Android Studio.
-- Android SDK compatible con la configuración del proyecto.
-- Dispositivo Android o emulador.
+- Android SDK compatible con el proyecto.
+- Emulador Android o dispositivo físico.
+- Java compatible con el backend.
+- Acceso al repositorio del microservicio.
+- Conexión a Internet para el traductor externo.
 
-### Pasos de ejecución
+### Ejecutar el backend
 
-1. Ingresar al repositorio de GitHub:
+1. Descargar o clonar el repositorio del backend.
+2. Abrir una terminal en la carpeta del proyecto Spring Boot.
+3. Ejecutar en Windows:
 
-   https://github.com/johoces-lgtm/transturkish
+       .\mvnw.cmd spring-boot:run
 
-2. Clonar el repositorio o descargar el proyecto en formato ZIP.
+4. Comprobar que el servidor se encuentre activo.
+5. Abrir en el navegador:
 
-3. Abrir Android Studio.
+       http://localhost:8080/api/palabras
 
-4. Seleccionar **Open** y abrir la carpeta del proyecto.
+6. Comprobar que existan palabras registradas.
 
-5. Comprobar que se esté utilizando la rama `main`.
+Para una partida conectada de diez preguntas se recomienda
+disponer de al menos diez palabras válidas con traducciones
+distintas.
 
-6. Esperar a que finalice la sincronización de Gradle.
+### Ejecutar la aplicación Android
 
-7. Conectar un dispositivo Android mediante USB o iniciar un emulador.
+1. Clonar o descargar el repositorio:
 
-8. Seleccionar la configuración de ejecución `app`.
+       https://github.com/johoces-lgtm/transturkish
 
-9. Presionar **Run** para compilar, instalar y ejecutar TransTurkish.
+2. Abrir el proyecto desde Android Studio.
+3. Seleccionar la rama de desarrollo correspondiente.
+4. Sincronizar Gradle.
+5. Encender el emulador.
+6. Mantener Spring Boot funcionando.
+7. Ejecutar la configuración app mediante Run.
 
-## Pruebas realizadas
+La URL local del backend está configurada en
+PalabraRepository.kt.
 
-La aplicación integrada fue probada en un dispositivo Android Xiaomi.
+La conexión HTTP local está habilitada para compilaciones
+debug. La configuración de conexión para la entrega firmada
+se encuentra pendiente.
 
-Se comprobaron las siguientes funcionalidades:
+## Pruebas automatizadas
 
-- Inicio y navegación.
-- Minijuego de cuatro preguntas.
-- Puntaje y mensajes de respuesta.
-- Animaciones y colores del minijuego.
-- Formulario de Registro.
-- Validación de campos obligatorios.
-- Validación de correo electrónico.
-- Validación de contraseña.
-- Aceptación de términos y condiciones.
-- Visualización de datos en Resumen.
-- Selección de fotografías desde la galería.
-- Captura de fotografías mediante la cámara.
-- Visualización de imágenes en Perfil.
-- Navegación y conservación del estado de imagen durante la navegación.
-- Persistencia local con DataStore después de cerrar y volver a abrir la aplicación.
+### Pruebas unitarias
+
+Se utilizan Kotest, MockK, JUnit y herramientas de pruebas
+de corrutinas.
+
+Módulos evaluados:
+
+- LoginViewModel
+- UsuarioViewModel
+- JuegoViewModel
+- GeneradorPreguntas
+- NuevaPalabra
+- PalabraRepository
+- PalabraViewModel
+- TraduccionRepository
+- TraduccionViewModel
+
+Cantidad de pruebas unitarias implementadas: 76.
+
+Ejecutar desde la terminal:
+
+    .\gradlew.bat :app:testDebugUnitTest
+
+Informe:
+
+    app/build/reports/tests/testDebugUnitTest/index.html
+
+### Pruebas de interfaz
+
+Se utiliza Compose UI Test con JUnit para comprobar:
+
+- Navegación hacia el selector de modalidades.
+- Inicio de una partida sin conexión.
+- Validación de texto vacío en el traductor.
+
+Se incluyen tres pruebas nuevas y la prueba instrumentada
+original del proyecto.
+
+Ejecutar con un emulador activo:
+
+    .\gradlew.bat :app:connectedDebugAndroidTest
+
+### Cobertura
+
+Se utiliza JaCoCo para medir la cobertura del código.
+
+Generar informe:
+
+    .\gradlew.bat :app:createDebugUnitTestCoverageReport
+
+Ubicación:
+
+    app/build/reports/coverage/test/debug/index.html
+
+La medición definitiva de la cobertura de la lógica
+se realizará después de integrar ambas ramas.
+
+## Contenidos aplicados de las guías
+
+| Guía | Contenido |
+|------|-----------|
+| 7 | Configuración, MVVM y colaboración |
+| 8 | Construcción visual con Compose |
+| 9 | Adaptabilidad del diseño |
+| 10 | Navegación |
+| 11 | Formularios y validaciones |
+| 12 | Animaciones, estados y DataStore |
+| 13 | Cámara y galería |
+| 14 | Consumo de API REST mediante Retrofit |
+| 15 | Pruebas unitarias y de interfaz |
+
+## Distribución del trabajo
+
+### Joaquín Hoces
+
+- Identidad visual.
+- Pantalla de inicio y navegación.
+- Formularios y validaciones.
+- Minijuego local y conectado.
+- Integración móvil del vocabulario mediante Retrofit.
+- Interfaz CRUD del diccionario.
+- Traductor externo.
+- Pruebas unitarias y de interfaz.
+- Medición de cobertura.
+- Documentación técnica.
+
+### Alonso Payacán
+
+- Desarrollo del backend propio en Spring Boot.
+- Base de datos y endpoints del vocabulario.
+- Integración de recursos nativos.
+- Cámara y galería.
+- Persistencia de imágenes de perfil.
+- Animaciones y preferencias.
+
+## Control de versiones
+
+Ramas de desarrollo:
+
+- main
+- feature/joaquin-entrega3
+- feature/alonso-entrega3
+
+Cada integrante desarrolla y registra sus avances
+mediante commits en su rama correspondiente.
+
+La integración definitiva se encuentra pendiente.
+
+## Planificación con Trello
+
+Pendiente de incorporar el enlace al tablero y las evidencias
+reales de planificación y distribución de tareas.
+
+## APK firmado
+
+Pendiente de generar después de la integración definitiva.
+
+Se incorporarán:
+
+- APK firmado.
+- Evidencia del proceso de firma.
+- Configuración técnica.
+- Llave de firma académica según las instrucciones de entrega.
 
 ## Estado del proyecto
 
-Las funcionalidades principales de TransTurkish se encuentran integradas en la rama `main` y han sido probadas en conjunto.
+Avance de desarrollo correspondiente a la Evaluación Parcial 4
+de Desarrollo de Aplicaciones Móviles.
 
-El proyecto utiliza las herramientas y los conceptos trabajados durante las Guías 7 a 13 de la asignatura Programación de Aplicaciones Móviles.
+Pendientes de integración y comprobación final:
 
-## Repositorio
+- Autenticación con el backend.
+- Persistencia de sesión.
+- Categorías y niveles de vocabulario.
+- Progreso individual.
+- Integración de ramas.
+- Cobertura definitiva.
+- Configuración del servidor para la entrega.
+- APK firmado.
+- Evidencias finales de Trello.
+
+## Repositorio Android
 
 https://github.com/johoces-lgtm/transturkish
