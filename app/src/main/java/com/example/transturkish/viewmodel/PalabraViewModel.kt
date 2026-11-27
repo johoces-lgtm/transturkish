@@ -26,9 +26,10 @@ data class PalabraUiState(
     val editandoId: Long? = null
 )
 
-class PalabraViewModel : ViewModel() {
-
-    private val repository = PalabraRepository()
+class PalabraViewModel(
+    private val repository: PalabraRepository =
+        PalabraRepository()
+) : ViewModel() {
 
     private val _estado =
         MutableStateFlow(PalabraUiState())

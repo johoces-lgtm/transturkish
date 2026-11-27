@@ -64,12 +64,17 @@ dependencies {
     // Guía 15: pruebas unitarias con Kotest
     testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
     testImplementation("io.kotest:kotest-assertions-core:5.8.0")
+    // Guía 15: Simulación de dependencias
+    testImplementation("io.mockk:mockk:1.14.6")
+
+// Guía 15: Pruebas de corrutinas
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.10.1")
 
 // JUnit 5
-    testImplementation("org.junit.jupiter:junit-jupiter:5.10.0")
+    testImplementation("org.junit.jupiter:junit-jupiter:5.12.2")
 
 // Compatibilidad con las pruebas JUnit 4 existentes
-    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.10.0")
+    testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.12.2")
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)
