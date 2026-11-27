@@ -32,6 +32,7 @@ import com.example.transturkish.viewmodel.MainViewModel
 import com.example.transturkish.viewmodel.UsuarioViewModel
 import kotlinx.coroutines.flow.collectLatest
 import com.example.transturkish.ui.screens.DiccionarioScreen
+import com.example.transturkish.ui.screens.TraductorScreen
 
 
 class MainActivity : ComponentActivity() {
@@ -110,6 +111,14 @@ class MainActivity : ComponentActivity() {
                             // Pantalla del diccionario
                             composable(Screen.Diccionario.route) {
                                 DiccionarioScreen(
+                                    navController = navController
+                                )
+                            }
+
+                            // Pantalla del traductor
+                            composable(Screen.Traductor.route) {
+
+                                TraductorScreen(
                                     navController = navController
                                 )
                             }

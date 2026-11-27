@@ -46,6 +46,7 @@ import androidx.navigation.NavController
 import com.example.transturkish.ui.navigation.Screen
 import com.example.transturkish.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
+import androidx.compose.material.icons.filled.Translate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -388,6 +389,50 @@ fun HomeScreen(
 
                         Text(
                             text = "Explora y amplía tu vocabulario de turco",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+
+                // Acceso al traductor
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+
+                    colors = CardDefaults.cardColors(
+                        containerColor =
+                            MaterialTheme.colorScheme.primaryContainer
+                    ),
+
+                    onClick = {
+                        navController.navigate(
+                            Screen.Traductor.route
+                        )
+                    }
+                ) {
+
+                    Column(
+                        modifier = Modifier.padding(20.dp),
+
+                        verticalArrangement =
+                            Arrangement.spacedBy(8.dp)
+                    ) {
+
+                        Icon(
+                            imageVector = Icons.Default.Translate,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.size(32.dp)
+                        )
+
+                        Text(
+                            text = "Traductor",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Text(
+                            text = "Traduce palabras y frases entre turco y español",
                             style = MaterialTheme.typography.bodyMedium
                         )
                     }
