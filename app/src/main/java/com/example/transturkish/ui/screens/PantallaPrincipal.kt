@@ -14,12 +14,14 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.transturkish.viewmodel.EstadoViewModel
 
 @Composable
-fun PantallaPrincipal(modifier: Modifier = Modifier, viewModel: EstadoViewModel = viewModel()) {
-    // Observamos los estados desde el ViewModel
+fun PantallaPrincipal(
+    modifier: Modifier = Modifier,
+    viewModel: EstadoViewModel = viewModel(),
+    onAbrirDiccionario: () -> Unit = {}
+) {
     val estado = viewModel.activo.collectAsState()
     val mostrarMensaje = viewModel.mostrarMensaje.collectAsState()
 
-    // Parte 3: Simulación de carga
     if (estado.value == null) {
         Box(
             modifier = modifier.fillMaxSize(),
@@ -28,48 +30,59 @@ fun PantallaPrincipal(modifier: Modifier = Modifier, viewModel: EstadoViewModel 
             CircularProgressIndicator()
         }
     } else {
-        // Ya cargó, mostramos la interfaz
         val estaActivo = estado.value!!
 
-        // Animación de color fluida
         val colorAnimado by animateColorAsState(
             targetValue = if (estaActivo) Color(0xFF4CAF50) else Color(0xFFB0BEC5),
-        animationSpec = tween(durationMillis = 500),
-        label = "colorAnimacion"
+            animationSpec = tween(durationMillis = 500),
+            label = "colorAnimacion"
         )
 
-        // Texto derivado que cambia según el estado
         val textoBoton by remember(estaActivo) {
-            derivedStateOf { if (estaActivo) "Desactivar" else "Activar" }
+            derivedStateOf {
+                if (estaActivo) "Desactivar" else "Activar"
+            }
         }
 
-        // Parte 4: Feedback animado y botones
         Column(
             modifier = modifier
                 .fillMaxSize()
-        .padding(32.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
+                .padding(32.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Button(
                 onClick = { viewModel.alternarEstado() },
-            colors = ButtonDefaults.buttonColors(containerColor = colorAnimado),
-            modifier = Modifier
-                .fillMaxWidth()
-            .height(60.dp)
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = colorAnimado
+                ),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
             ) {
-            Text(text = textoBoton, style = MaterialTheme.typography.titleLarge)
-        }
+                Text(
+                    text = textoBoton,
+                    style = MaterialTheme.typography.titleLarge
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Animación de aparición/desaparición del mensaje
             AnimatedVisibility(visible = mostrarMensaje.value) {
                 Text(
                     text = "¡Estado guardado exitosamente!",
-                color = Color(0xFF4CAF50),
-                style = MaterialTheme.typography.bodyLarge,
+                    color = Color(0xFF4CAF50),
+                    style = MaterialTheme.typography.bodyLarge
                 )
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Button(
+                onClick = onAbrirDiccionario,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Abrir diccionario")
             }
         }
     }

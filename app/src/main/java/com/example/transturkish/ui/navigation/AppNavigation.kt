@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.transturkish.ui.screens.CamaraScreen
+import com.example.transturkish.ui.screens.PalabraScreen
 import com.example.transturkish.ui.screens.PantallaPrincipal
 import com.example.transturkish.ui.screens.RegistroScreen
 import com.example.transturkish.ui.screens.ResumenScreen
@@ -13,25 +14,37 @@ import com.example.transturkish.viewmodel.UsuarioViewModel
 
 @Composable
 fun AppNavigation() {
+
     val navController = rememberNavController()
-    // Se instancia el ViewModel una sola vez para ser compartido
     val usuarioViewModel: UsuarioViewModel = viewModel()
 
     NavHost(
         navController = navController,
         startDestination = "registro"
     ) {
+
         composable(route = "registro") {
             RegistroScreen(navController, usuarioViewModel)
         }
+
         composable(route = "resumen") {
             ResumenScreen(usuarioViewModel)
         }
+
         composable(Screen.Animaciones.route) {
-            PantallaPrincipal()
+            PantallaPrincipal(
+                onAbrirDiccionario = {
+                    navController.navigate("vocabulario")
+                }
+            )
         }
+
         composable(Screen.Camara.route) {
             CamaraScreen()
+        }
+
+        composable(route = "vocabulario") {
+            PalabraScreen()
         }
     }
 }
